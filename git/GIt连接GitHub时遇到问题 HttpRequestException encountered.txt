@@ -1,0 +1,32 @@
+一般来在git和githu连接后只需要两步就好
+$ git remote add origin https://github.com/qingshahguyan/testgit.git
+$  git remote rm origin
+但是在$  git remote rm origin遇到fatal：HttpRequestException encountered
+1
+2
+3
+解决：Github 禁用了TLS v1.0 and v1.1，必须更新Windows的git凭证管理器 
+通过此网址https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/
+
+ 
+下载之后安装重启git窗口 
+$ git remote add origin https://github.com/qingshahguyan/testgit.git 
+qingshahguyan是你的用户名testgit是你自己建的 repository名称 
+$ git remote rm origin 
+出现 
+**$ git push -u origin master 
+Counting objects: 6, done. 
+Delta compression using up to 8 threads. 
+Compressing objects: 100% (4/4), done. 
+Writing objects: 100% (6/6), 688 bytes | 344.00 KiB/s, done. 
+Total 6 (delta 2), reused 0 (delta 0) 
+remote: Resolving deltas: 100% (2/2), done. 
+To https://github.com/qingshahguyan/testgit.git 
+* [new branch] master -> master 
+** 
+就可以了，说明你的git和github已经可以同步了
+--------------------- 
+作者：淸沙 
+来源：CSDN 
+原文：https://blog.csdn.net/zy20120580223/article/details/79618880?utm_source=copy 
+版权声明：本文为博主原创文章，转载请附上博文链接！
