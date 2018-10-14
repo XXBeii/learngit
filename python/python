@@ -1,0 +1,52 @@
+函数：
+1.定义函数
+	```
+	def 函数名(参数):
+		函数体
+	```
+	函数的返回值用return语句返回
+
+	例子：
+	def my_abs(x):
+		if x >= 0:
+			return x
+		else:
+			return -x	
+
+	如果没有retuen语句，函数执行完毕后也会返回结果，只是结果为None。 return None可以简写为return
+2.空函数
+	如果想定义一个什么事也不做的空函数，可以用pass语句：
+
+	def nop():
+		pass
+
+	pass语句什么都不做，可以用来做占位符，比如现在还没有想好怎么写函数的代码，放一个pass，让带吗运行起来。
+
+	pass还可以用到其他语句里，比如：
+
+	if age >= 18:
+		pass
+
+	缺少了pass，代码运行就会语法错误。
+
+参数检查
+	调用函数时，如果参数个数不对，python解释器会自动检查出来，并抛出TypeError
+	但是如果参数类型不对，python解释器就无法帮助我们检查。
+	当传入了不恰当的参数时，内置函数abs会检查出参数错误，而my_abs并没有参数检查。所以my_abs定义还不够完善。数据类型检查可以用内置函数isinstance()实现:
+
+	def my_abs(x):
+		if not isinstance(x , (int , float)):
+			raise TypeError('bad oprand type')
+		if x >= 0:
+			return x
+		else:
+			return -x
+
+	添加了参数检查后，如果传入了错误的参数类型，函数可以抛出一个错误.
+
+返回多个值
+	函数可以返回多个值
+
+
+函数的参数
+

@@ -1,0 +1,126 @@
+为什么要对 Gradle 统一管理
+
+    在实际项目中，经常会出现一个 Project 中有多个 Module 的情况，如果每个 Module 又同时拥有相同的依赖，比如 v4 包，那么，每次 v4 包升级的时候修改多个 Module 中的 build.gradle 文件，更新其版本都是一件麻烦的事情，而且很有可能忘记某个 Module。
+
+    其次如果不同的module引入了不同版本的依赖，在合并的时候也可能导致一定的隐患
+
+    最后在组件化开发中，我们需要保证各个组件的编译环境应该是一致的，其中包括compileSdkVersion、buildToolsVersion等等
+
+    所以，将依赖进行统一管理，对于一个 Project 下拥有多个 Module 的情况来说是非常必要的。
+
+
+
+    使用脚本 config.gradle
+
+    假设项目结构如下：
+
+    root
+      --app
+             --build.gradle
+      --module1
+              --build.gradle
+      ...
+      --build.gradle1234567
+
+在root目录下创建 conf.gradle文件,在 config.gradle 中添加如下代码：
+
+
+
+ext {
+
+    android = [
+            compileSdkVersion: 21,// 用于编译的SDK版本
+            buildToolsVersion: "21.1.1",// 用于Gradle编译项目的工具版本
+
+            applicationId    : "com.sangfor.pocket",//包名
+
+            minSdkVersion    : 14,// 最低支持Android版本
+            targetSdkVersion : 21,// 目标版本
+
+            versionCode      : 1,
+            versionName      : "9.9.99",
+
+            // Version of "com.android.support:appcompat-v7", refer it as folow:
+            // compile "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
+            VSupportSdk      : '21.0.2'
+            ]
+
+    dependencies = [
+            "multidex"       : "com.android.support:multidex:1.0.0",
+            "appcompat-v7"   : "com.android.support:appcompat-v7:${android["VSupportSdk"]}",
+            "annotations"    : "com.android.support:support-annotations:23.1.1",
+            //...
+            ]
+
+
+    files = [
+            "AMap_Services"     : files('app/libs/AMap_Services_V2.3.1.jar'),
+            "AMap_Location"     : files('app/libs/AMap_Location_V3.3.0_20170118.jar'),
+            "Android_Map3D_SDK" : files('app/libs/Android_Map3D_SDK_V4.1.2_20161104.jar'),
+            "TencentLocationSDK": files('app/libs/TencentLocationSDK_v5.0.1_r251203_170116_1729.jar'),
+            "mta-sdk"           : files('app/libs/mta-sdk-1.0.0.jar'),
+            "open_sdk"          : files('app/libs/open_sdk.jar'),
+
+            //...
+            ]
+
+    projects = [
+            "common"              : project(':common'),
+            //"jni"                 : project(':jni'),
+            //"ormlite"             : project(':ormlite5.0'),
+            //"customswipelistview" : project(':customswipelistview'),
+            //...
+            ]
+    }
+
+其中： 
+- 针对第三方库可以知己使用 “”映射 
+- 针对本地jar文件，要files(‘相对于root的路径’) 
+- 针对本地工程，使用project(‘:工程名’)
+
+使用
+
+在 root 目录下的build.gradle 中加上apply from: “config.gradle”
+
+接下来就剩下最后一步了，在需要添加依赖的 Module 中使用
+
+
+android 节点的使用
+
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+    }
+
+}
+
+
+dependencies 节点的使用
+
+
+dependencies {
+    compile rootProject.ext.files["AMap_Services"]
+    compile rootProject.ext.files["AMap_Location"]
+    compile rootProject.ext.files["Android_Map3D_SDK"]
+    compile rootProject.ext.files["TencentLocationSDK"]
+    compile rootProject.ext.files["mta-sdk"]
+    compile rootProject.ext.files["open_sdk"]
+}
+
+
+
+不足之处
+
+在项目中有使用aar方式的引入，譬如compile(name: ‘jni’, ext:’aar’)，目前还未找到对应的集中配置管理方式
+
+---------------------
+
+本文来自 fei20121106 的CSDN 博客 ，全文地址请点击：https://blog.csdn.net/fei20121106/article/details/80538201?utm_source=copy 
