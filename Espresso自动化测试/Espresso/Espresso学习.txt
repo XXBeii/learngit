@@ -1,0 +1,378 @@
+Espresso
+
+https://blog.csdn.net/qiang_xi/article/details/52933593
+https://blog.csdn.net/u014608640/article/details/52535376
+https://segmentfault.com/a/1190000004338384
+
+
+当所有的测试用例执行完毕之后,Espresso会自动关闭界面
+
+
+
+Espresso由以下三个基础部分组成：
+	ViewMatchers -(匹配器) 在当前View层级去匹配指定的View,常常是通过匹配条件来需找UI组件或过滤UI
+	ViewActions -(界面行为) 执行Views的某些行为，如点击事件,模拟用户操作界面的行为
+	ViewAssertions -(界面判断) 检查VIews的缪写状态，如是否显示,模拟行为操作的View进行变换和结果验证
+
+Espresso测试
+	onView(ViewMathers)//1.匹配View
+		.perform(ViewAction)//2.执行view行为
+			.check(ViewAssertion);//3.验证View
+
+准备
+build.gradle配置如下：
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "23.0.3"
+    defaultConfig {
+        applicationId "com.sample.espresso"
+        minSdkVersion 14
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"    //1.
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])   
+    testCompile 'junit:junit:4.12'         											//2.
+    androidTestCompile "com.android.support:support-annotations:27.1.1"
+    androidTestCompile "com.android.support.test.espresso:espresso-core:3.0.1",{
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    
+	androidTestCompile("com.android.support.test.espresso:espresso-intents:3.0.1") {
+        exclude group: 'com.android.support'
+    }
+
+    androidTestCompile("com.android.support.test.espresso:espresso-contrib:3.0.1") {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+        exclude group: 'com.android.support', module: 'design'
+    }
+
+    // Runner and rules
+    androidTestCompile "com.android.support.test:runner:1.0.1"
+    androidTestCompile "com.android.support.test:rules:1.0.1"
+
+}
+
+
+
+注解：
+@Rule
+测试规则，可以在该注解下引用一个规则或者定义一个方法，而你引用或定义的就是测试规则。如：
+@Rule
+public ActivityTestRule mActivityRule = new ActivityTestRule<>(
+            MainActivity.class);
+这句话定义了一个测试规则，可以看到构造方法的参数里指定了一个MainActivity.class , 具体的体现就是当你运行这段测试代码时，app将会直接打开MainActivity界面然后进行你所定义的测试用例，所以当你想直接测试某个界面时，你可以把那个界面填到这个参数里，这样就直接打开你指定的界面进行测试了。
+
+@Test
+该注解用来定义一个测试用例，当你的测试类运行时，所执行的代码就是Test注解下的(Espresso还提供了其他的一些注解，比如：@After，@Before等) 
+
+
+无论是通过withId()找控件还是通过withText()找控件或者其他方式比如withClassName(),withResourceName(),withTagKey()等方法，都要一定保证所找的控件在当前页面确实存在且可见，不然会报：NoMatchingViewException，当然你还可能碰到其他异常，比如AmbiguousViewMatcherException，AppNotldleException异常等等，具体的报错原因可以到android官网查看，地址:Espresso的各种异常[https://developer.android.com/reference/android/support/test/espresso/AmbiguousViewMatcherException]
+
+如果你要测试AdapterView ,比如 ListView 或GridView等,使用上面的onView()方法是无效的,因为AdapterView的布局item是动态呈现的,没法直接指定,所以当你要测试AdapterView时,请把onView()方法换成onData() 方法,与onView()方法返回ViewInteraction类似,onData()方法返回DataInteraction,二者用法基本都是一样的.
+
+
+perform()参数中常用的方法：
+
+click():
+	返回一个点击action，Espresso利用这个方法执行一次点击操作，就和我们自己手动点击按钮一样，只不过Espresso把点击这个操作自动化了，下面的方法都是一样的道理
+clearText():
+	返回一个清除指定view中的文本action，在测试EditText时用的比较多
+swipeLeft():
+	返回一个从右往左滑动的action，这个在测试ViewPager时特别好用
+swipeRight():
+	返回一个从左往右滑动的action，这个在测试ViewPager时特别好用
+swipeDown():
+	返回一个从上往下滑动的action
+swipeUp():
+	返回一个从下往上滑动的action
+closeSoftKeyboard():
+	返回一个关闭输入键盘的action
+pressBack():
+	返回一个点击手机返回键的action
+doubleClick():
+	返回一个双击action
+longClick():
+	返回一个长按action
+scrollTo():
+	返回一个移动action
+replaceText():
+	返回一个替换文本的action
+openLinkWithText():
+	返回一个打开指定链接action
+除了以上常用方法还有一些不常用的，想继续研究可以查看Espresso中的ViewActions类，需要注意的是，所有的方法包括上面说到的和没说到的，都有一个前提条件，就是你要执行的view必须在当前界面上显示出来，这有两层意思：
+1.当前界面必须能找到这个控件
+2.这个控件必须是可见的
+这是以上所有方法通用的要求，当然有些方法还有额外的要求，比如必须要先获取焦点等，
+
+
+
+
+
+
+一. 基础
+
+1. 获取View  
+		withId 方式 			onView(withId(R.id.my_view))
+
+		withText方式			onView(withText("Hello World!"))
+
+
+		有时，R.id的值在多个view间共用。这种情况下使用R.id将会抛出一个AmbiguousViewMatcherException（例如）异常
+
+		可以通过结合匹配器来缩小搜索的范围：
+			onView(allOf(withId(R.id.my_view), withText("Hello!")))  
+			onView(allOf(withId(R.id.my_view), not(withText("Unwanted"))))  
+
+		用最少的描述匹配器来找到你所查询的view。不要进行过多的描述因为这会强制框架去做更多不必要的工作。
+		如果目标view存在于AdapterView（例如ListView,GridView,Spinner）中,onView方法可能会不管用，推荐使用onData方法。
+
+2. 执行View行为
+		点击
+		onView(...).perform(click());
+				文本内容输入	
+				你也可以在一次调用中同时执行多个动作：
+				onView(...).perform(typeText(Hello),click());
+		scrollTo滑动    
+				如果你要操作的view位于ScrollView内（纵向或横向），需要考虑到与scrollTo()连用时（如click（）和typeText（））需要view进行显示。这样保证了在进行其它操作之前该view已经显示。
+				onView(...).perform(scrollTo(),click());
+		
+				注：如果view已经显示，那么scrollTo()将不会起作用，在某些情况下如在大分辨率下显示该view时可以安全地使用该方法。（例如，你同时在小屏幕和大屏幕分辨率的手机上同时进行测试）
+				注：scrollTo()必须在ScrollView内，例如list等会在一定机型上不起作用
+
+
+3. 检验View
+		通过方法check()断言可作用于当前选中的view。使用最多的是matches()断言，它通过ViewMatcher来断言当前选中的view的状态
+			检验View的文本内容：检测一个view是否设置文本“Hello！”
+				onView(...).check(matches(withText("Hello!")));
+			检验View的显示状态
+				onView(...).check(matches(isDisplayed()));
+		注：方法onView中不要包含参数“assertions”–相反，在check块中直接声明你所要检测的内容。例如：
+		如果你想要断言一个view中设置了”Hello！”，下面是一个不好的示例:
+				// 不要在onView内使用像withText之类的断言
+				onView(allOf(withId(...), withText("Hello!"))).check(matches(isDisplayed()));
+		另一方面，如果你想要断言一个设置“Hello！”的view没被隐藏—例如改变了view的可见不可见的标记—上面的代码是可以的 
+		注：断言一个view没有显示与断言一个view不存在于当前的view层级是不同的
+
+
+二. AdapterView的onDate 
+		ViewInteraction：关注于已经匹配到的目标控件。通过onView()方法我们可以找到符合匹配条件的唯一的目标控件，我们只需要针对这个控件进行我们需要的操作
+				1. onView()
+				2. Matcher< View>: 构造一个针对于View匹配的匹配规则
+		DataInteraction:关注于AdapterView的数据。由于AdapterView的数据源可能很长，很多时候无法一次性将所有数据源显示在屏幕上，因此我们主要先关注AdapterView中包含的数据，而非一次性就进行Vie		w的匹配。
+				1. onData
+				2. Matcher< ? extends Object>: 构造一个针对于Object(数据)匹配的匹配规则
+		onData 只适用于 AdapterView及其派生类，不适用于 RecyleView
+		AdapterView是一种通过Adapter来动态加载数据的界面元素。我们常用的ListView, GridView, Spinner等等都属于AdapterView。不同于我们之前提到的静态的控件，AdapterView在加载数据时，可能只有一部分显示在了屏幕上，对于没有显示在屏幕上的那部分数据，我们通过onView()是没有办法找到的。
+
+		Matcher< ? extends Object>的构建规则： 
+				类型校验 : 确认AdapterView
+				参数校验：确认item
+
+		注：初始化时就显示在屏幕上的adapter中的view你也可以不适用onData()因为他们已经被加载了。然而，使用onDta（）会更加安全。
+
+		提醒：在打破了继承约束（尤其是getItem()的API）实现了AdatpterView的自定义view中onData（）是有问题的。在这中情况下，做好的做法就是重构应用的代码。如果不重构代码，你也可以实现自定义的AdapterViewProtocol来实现。查看Espresso的AdapterViewProtocols 来查看更多信息。
+		[https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/core/src/main/java/android/support/test/espresso/action/AdapterViewProtocol.java]
+
+1. 简单类型
+		类型校验
+		参数校验
+				onData(allOf(is(instanceOf(String.class)), is("Americano"))).perform(click());
+
+2. 示例
+		activity 包含一个 ListView，它基于一个为每一行提供一个 ​Map
+				onData(allOf(is(instanceOf(Map.class)), hasEntry(equalTo("STR"), is("item: 50")))).perform(click());
+
+		2.1. is(instanceOf(Map.class)) 类型校验
+				限制搜AdapterView中任意条目的条件为一个Map
+				在此例子中，ListView 的所有行都满足条件。但我们想要点击指定的条目 “item: 50”，所以我们需要继续缩小范围：
+		2.2. hasEntry(equalTo("STR"), is("item: 50")
+
+				优化：
+				这个 Matcher< String, Object > 会匹配所有包含任意键，值=“item: 50” 的 Map 。鉴于查找此条目的代码较长，而且我们希望在其他地方重用它，我们可以写一个自定义的 matcher “withItemContent”：
+						public static Matcher<Object> withItemContent(String expectedText) {
+							checkNotNull(expectedText);
+							return withItemContent(equalTo(expectedText));
+						}
+
+						public static Matcher<Object> withItemContent(Matcher itemTextMatcher) {
+							return new BoundedMatcher<Object, Map>(Map.class) {
+									@Override
+									public boolean matchesSafely(Map map) {
+										return hasEntry(equalTo("STR"), itemTextMatcher).matches(map);
+									}
+
+									@Override
+									public void describeTo(Description description) {
+										description.appendText("with item content: ");
+										itemTextMatcher.describeTo(description);
+									}
+							};
+						}
+
+				现在点击该条目的代码很简单了：
+				onData(withItemContent("item: 50")).perform(click());
+			此测试的完整代码请查看 AdapterViewText#testClickOnItem50 和自定义匹配器。
+			[https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java]
+			[https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/LongListMatchers.java]
+
+3. 自定义Adapter:未打破继承约束	
+		使用BoundedMatcher实现：
+				类型校验
+				参数校验
+		示例：
+				//根据销售机会名称查找到List中的item,并点击
+				onData(SaleOppMatcher.searchMainItemWithName(oppName)).perform(click());
+
+				/**
+				 * 查找指定搜索条件  销售机会匹配
+				* @param name 需要搜索的字
+				*/
+				public static Matcher<Object> searchMainItemWithName(final String name) {
+					return new BoundedMatcher<Object, SalesOpp>(SalesOpp.class) {
+						@Override
+						protected boolean matchesSafely(SalesOpp item) {
+							return item != null
+								&& !TextUtils.isEmpty(item.content)
+								&& item.content.equals(name);
+							}
+
+						@Override
+						public void describeTo(Description description) {
+							description.appendText("SalesOpp has Name: " + name);
+						}
+					};
+				}
+
+4. 自定义Adapter:打破继承约束 usingAdapterViewProtocol
+		//根据客户拜访名称查找到List中的item,并点击
+		onData(LegWorkMatcher.searchMainItemWithName(legName)).perform(click());
+		[https://blog.csdn.net/fei20121106/article/details/70577731]
+
+5. OnData支持的筛选
+	onData我们使用了data进行了筛选，完全屏蔽了View，那么现在问题来了:
+	假设一个页面里有多个ListView，譬如“ViewPager＋ListView的实现”
+	如果继续用上述方法，会出现：
+	android.support.test.espresso.AmbiguousViewMatcherException: ‘is assignable from class: class android.widget.AdapterView’ matches multiple views in the hierarchy. Problem views are marked with ‘*MATCHES*’ below.
+
+	大意就是说，有多个AdapterView在界面里，那么结局方案是：
+		inAdapterView(Matcher adapterMatcher)
+
+		onData(...).inAdapterView(allOf(isAssignableFrom(AdapterView.class),isDisplayed())).perform(click());
+
+		onData(...).inAdapterView(allOf(withId(R.id.list),isDisplayed())).perform(click());
+
+
+		现在我们详细的看看DataInteraction还支持那些筛选，来辅助onData：
+
+			Tables											示意																	适用场景
+		inAdapterView(Matcher< View > adapterMatcher)	选择 满足adapterMatcher的adapterview 来执行onData操作					当前界面有多个adapterview，导致错误
+		onChildView(Matcher< View> childMatcher)		匹配”onData所匹配的item视图”中的指定子视图								需要点击item中的某个子view
+		atPosition(Integer atPosition)					选中匹配的Adapter的第几项，默认不选择，可以通过atPosition方法设定		onData只定义“类型校验”, onData(is(instanceOf(String.class
+																																	)).atPosition(0)…
+		inRoot(Matcher< Root> rootMatcher)				在指定跟视图中来执行onData操作											对话框里的adapterview
+
+
+
+	PullToRefreshListView 如何使用inAdapterView？
+			PullToRefreshListView里面的ListView实际上是嵌套了一个id为android.R.id.list的ListView，因此可以用这个ID来进行匹配。如果单一匹配规则还不够精细，可以再从其他方面构造复合匹配规则。比如针对这种情况我采用了：
+				onData(allOf(is(instanceOf(TeacherModel.class)),teacherHasName(VALUE_TEACHER_NAME_TARGET)))
+					.inAdapterView(allOf(withId(android.R.id.list), isDisplayed()))
+					.perform(click());
+
+6. 匹配 ListView 的 footer/header 视图
+	header 和 footer 通过 addHeaderView/addFooterView API 添加到 ListView 中。为了能够使用 Espresso.onData 加载它们，确保使用预置的值来设置数据对象（第二个参数）。			
+		public static final String FOOTER = "FOOTER";
+		...
+		View footerView = layoutInflater.inflate(R.layout.list_item, listView, false);
+		((TextView) footerView.findViewById(R.id.item_content)).setText("count:");
+		((TextView) footerView.findViewById(R.id.item_size)).setText(String.valueOf(data.size()));
+		listView.addFooterView(footerView, FOOTER, true);
+	然后，你可以写一个匹配器来匹配此对象：
+		import static org.hamcrest.Matchers.allOf;
+		import static org.hamcrest.Matchers.instanceOf;
+		import static org.hamcrest.Matchers.is;
+
+		@SuppressWarnings("unchecked")
+		public static Matcher<Object> isFooter() {
+  			return allOf(is(instanceOf(String.class)), is(LongListActivity.FOOTER));
+		}
+	在测试中很轻易就能加载该视图：
+		import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
+		import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+		import static com.google.android.apps.common.testing.ui.espresso.sample.LongListMatchers.isFooter;
+
+		public void testClickFooter() {
+		  onData(isFooter())
+		   .perform(click());
+		  ...
+		}
+	请在 AdapterViewtest#testClickFooter 中查看完整示例代码。
+	[https://android.googlesource.com/platform/frameworks/testing/+/android-support-test/espresso/sample/src/androidTest/java/android/support/test/testapp/AdapterViewTest.java]
+
+三. RecyleView
+	RecyclerViews 和 AdapterViews 的工作原理不同，因此onData()不适用于RecyleView
+		如果想要与RecyleView交互，请引入“espresso-contrib”，里边包含一系列的Actions可以用于滚动和点击
+		//TODO 根据android.support.test.espresso.contrib.RecyclerViewActions揣摩RecyclerView的macher规则
+
+1. actionOnItem源码解析
+
+	public static <VH extends ViewHolder> PositionableRecyclerViewAction actionOnItem(
+      final Matcher<View> itemViewMatcher, final ViewAction viewAction) {
+    	Matcher<VH> viewHolderMatcher = viewHolderMatcher(itemViewMatcher);
+    	return new ActionOnItemViewAction<VH>(viewHolderMatcher, viewAction);
+  	}
+
+2. 使用：
+	1. 点击RecyclerView列表中第四个item
+		onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition(4,click()));
+	2. 点击带有 "Effective Java " 字符串的item
+		onView(withId(R.id.recyclerView))
+                .perform(RecyclerViewActions.actionOnItem(
+                        hasDescendant(withText("Effective Java ")), click()));
+		这里的hasDescendant 指代的是对应的item的后代中有包含对应文本的内容的。不过使用这个需要小心 因为很有可能会出现两个同样内容的。
+	3. actionOnHolderItem 的用法
+	
+			@Test
+    		public void testItemSelect() {
+        		onView(withId(R.id.recyclerView))
+            		.perform(RecyclerViewActions.actionOnHolderItem(
+                        new CustomViewHolderMatcher(hasDescendant(withText("Effective Java "))), click()));
+
+    		}
+
+
+    		private static class CustomViewHolderMatcher extends TypeSafeMatcher<RecyclerView.ViewHolder> {
+    		    private Matcher<View> itemMatcher = any(View.class);
+
+    		    public CustomViewHolderMatcher() { }
+
+    		    public CustomViewHolderMatcher(Matcher<View> itemMatcher) {
+    		        this.itemMatcher = itemMatcher;
+				}
+
+        		@Override
+        		public boolean matchesSafely(RecyclerView.ViewHolder viewHolder) {
+         		   return RecyclerAdapter.BookItemViewHolder.class.isAssignableFrom(viewHolder.getClass())
+        		            && itemMatcher.matches(viewHolder.itemView);
+        		}
+
+        		@Override
+        		public void describeTo(Description description) {
+        		    description.appendText("is assignable from CustomViewHolder");
+        		}
+    		}
