@@ -1,7 +1,10 @@
 
 https://www.cnblogs.com/punkisnotdead/p/5139372.html
 
-https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&mid=2650820326&idx=1&sn=7f741d29f156af6db7c37623f9e8ca4c&mpshare=1&scene=23&srcid=0209FiTmrQBs0PJHPJsY7brf#rd
+https://www.jianshu.com/p/6bd7dd1cd491
+
+https://www.race604.com/tint-drawable/
+
 
 
 #### Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，对视图进行颜色渲染。
@@ -19,21 +22,21 @@ https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&mid=2650820326&idx=1&sn=7f741d
 src属性 引用的是同一个 shape图形,第一个没有使用tint，第二个使用tint属性，减少资源文件创建
 
 ```xml
-	<ImageView
-	 	android:id="@+id/image1"
-        android:id="@+id/bottom_tabs_item_img"
-        android:layout_width="wrap_content"
-        android:src="@drawable/shape_radian_bg"
-        android:layout_height="wrap_content"
-        />
+<ImageView
+ 	android:id="@+id/image1"
+    android:id="@+id/bottom_tabs_item_img"
+    android:layout_width="wrap_content"
+    android:src="@drawable/shape_radian_bg"
+    android:layout_height="wrap_content"
+    />
 
-    <ImageView
-        android:id="@+id/image2"
-        android:layout_width="wrap_content"
-        android:src="@drawable/shape_radian_bg"
-        android:layout_height="wrap_content"
-        android:tint="#f09"
-        />
+<ImageView
+    android:id="@+id/image2"
+    android:layout_width="wrap_content"
+    android:src="@drawable/shape_radian_bg"
+    android:layout_height="wrap_content"
+    android:tint="#f09"
+    />
 ```
      当然src属性也可以使用图片资源如：对图片进行着色（矢量图）
 
@@ -49,7 +52,7 @@ Drawable.ConstantState state = drawable.getConstantState();
 Drawable drawable1 = DrawableCompat.wrap(state == null ? drawable : state.newDrawable()).mutate();
 
 drawable1.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
- DrawableCompat.setTint(drawable1,ContextCompat.getColor(this,R.color.colorAccent));
+DrawableCompat.setTint(drawable1,ContextCompat.getColor(this,R.color.colorAccent));
 
 imageView1.setImageDrawable(drawable1);
 ```
@@ -61,13 +64,35 @@ DrawableCompat类：是Drawable的向下兼容类，我们为了在6.0一下兼�
 
 
 
-二、一张图片实现 selector
+## 二、一张图片实现 selector
 
+### 在color文件夹下创建选择器：
+	
+icon.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/cl_d51422" android:state_pressed="true" />
+    <item android:color="@color/cl_d51422" android:state_focused="true"/>
+    <item android:color="@color/cl_d51422" android:state_selected="true"/>
+    <item android:color="@color/cl_222222" />
 
-```Java
-public static void main(String[] args){}
+</selector>
+
 ```
 
-```javascript
-document.getElementById("ts").innerHTML="Hello"
+在布局中使用
+
+```xml
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/bg"
+    android:tint="@color/icon"
+    />
 ```
+
+
+
+
+
