@@ -4,9 +4,9 @@ https://www.cnblogs.com/punkisnotdead/p/5139372.html
 https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&mid=2650820326&idx=1&sn=7f741d29f156af6db7c37623f9e8ca4c&mpshare=1&scene=23&srcid=0209FiTmrQBs0PJHPJsY7brf#rd
 
 
-Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，对视图进行颜色渲染。
+#### Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，对视图进行颜色渲染。
 
-作用：Tint的存在一定程度上减少了我们对图片的需求以及apk的大小；比如背景选择器
+#### 作用：Tint的存在一定程度上减少了我们对图片的需求以及apk的大小；比如背景选择器
 
 
 
@@ -18,7 +18,7 @@ Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，�
 
 src属性 引用的是同一个 shape图形,第一个没有使用tint，第二个使用tint属性，减少资源文件创建
 
-```java
+```Java
 	<ImageView
 	 	android:id="@+id/image1"
         android:id="@+id/bottom_tabs_item_img"
@@ -41,7 +41,7 @@ src属性 引用的是同一个 shape图形,第一个没有使用tint，第二�
 
 ### 方法二：代码实现
 
-```java
+```Java
 Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
 imageView.setImageDrawable(drawable);
 
