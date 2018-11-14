@@ -1,0 +1,36 @@
+
+android:inputType //设置文本的类型，用于帮助输入法显示合适的键盘类型
+android:imeOptions //设置右下角IME动作与编辑框相关的动作，如actionDone右下角将显示一个“完成”，而不设置默认是一个回车符号.下面会详细说明.
+
+
+我们在使用EditText中有时候会限制输入框中输入的文本类型,或者当弹出软键盘时,出现的是比较合适的输入法.如:我们在扣扣时,弹出的软件盘显示的就是数字,当输入密码时,右下角编辑框显示的是"完成",点击即会关闭软键盘.其实这也就是inputType和imeOptions属性来实现的,inputType属性可以指定键盘的类型,而imeOptions指定键盘右下角显示的Action.下面我们就来实现EditText使用过程中的小细节.
+
+这个类似QQ登录输入框,第一个EditText(用户名)的inputType设置的是text,imeOptions设置的是actionNext(下一个).第二个EditText(密码)的inputType设置的是textPassword,imeOptions设置的是actionDone(完成).当输入完用户名,点击键盘action下一个,会跳到密码输入框,当输入完密码后,点击键盘action完成,软键盘就会隐藏.
+
+
+```xml
+ <EditText
+     android:id="@+id/et_user_name"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:hint="请输入用户名..."
+     android:imeOptions="actionNext"
+     android:inputType="text"
+     android:textColor="@color/black" />
+ 
+ <EditText
+     android:id="@+id/et_password"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:hint="请输入密码..."
+     android:imeOptions="actionDone"
+     android:inputType="textPassword"
+     android:textColor="@color/black" />
+
+```
+
+#### 注意:这里需要注意的是,如果想让键盘显示Action,需要inputType和imeOptions结合使用才可以,只使用imeOptions是不会有效果的.只会显示默认的换行action.(不同手机的输入法不一样,可能显示的会有点小差别)
+
+
+
+
