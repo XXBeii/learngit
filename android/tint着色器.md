@@ -63,3 +63,11 @@ DrawableCompat类：是Drawable的向下兼容类，我们为了在6.0一下兼�
 
 二、一张图片实现 selector
 
+
+```Java
+public static void main(String[] args){}
+```
+
+```javascript
+document.getElementById("ts").innerHTML="Hello"
+```
