@@ -40,7 +40,6 @@ android:imeOptions //设置右下角IME动作与编辑框相关的动作，如ac
 
 值 | 含义 | 
 ----|------|
-
 "text" |普通文本键盘
 "textEmailAddress"| 带有@字符的普通文本键盘
 "textUri" |带有/字符的普通文本键盘.
@@ -54,7 +53,6 @@ android：inputType还允许指定某些键盘行为,例如是否大写所有新
 值 | 含义 | 
 ----|------|
 "textCapSentences" |普通的文本键盘,大写每个新句子的第一个字母.
-
 "textCapWords" |大写每个单词的正常文本键盘.适合标题或人名.
 "textAutoCorrect" |正常文本键盘,可纠正拼写错误的字词.
 "textPassword" |这个就和设置password="true"是一样的效果.以原点的形式显示输入的文本.
