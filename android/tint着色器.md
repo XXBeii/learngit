@@ -42,7 +42,7 @@ src属性 引用的是同一个 shape图形,第一个没有使用tint，第二�
 ### 方法二：代码实现
 
 ```Java
-Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
+public Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
 imageView.setImageDrawable(drawable);
 
 Drawable.ConstantState state = drawable.getConstantState();
