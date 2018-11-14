@@ -18,7 +18,7 @@ https://mp.weixin.qq.com/s?__biz=MzAxMTI4MTkwNQ==&mid=2650820326&idx=1&sn=7f741d
 
 src属性 引用的是同一个 shape图形,第一个没有使用tint，第二个使用tint属性，减少资源文件创建
 
-```Java
+```xml
 	<ImageView
 	 	android:id="@+id/image1"
         android:id="@+id/bottom_tabs_item_img"
@@ -42,7 +42,7 @@ src属性 引用的是同一个 shape图形,第一个没有使用tint，第二�
 ### 方法二：代码实现
 
 ```Java
-public Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
+Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
 imageView.setImageDrawable(drawable);
 
 Drawable.ConstantState state = drawable.getConstantState();
