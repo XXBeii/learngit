@@ -1,0 +1,6 @@
+optString方法会在对应的key中的值不存在的时候返回一个空字符串或者返回你指定的默认值，但是getString方法会出现空指针异常的错误。
+
+可以看到getString、optString任意类型的value在return之前都会被强转为string类型， 
+这也就是为什么一直用getString来获取字段时从没出现过数据类型异常的原因。
+
+getString只有在没有该字段或结果为null的时候才会抛出异常。类型不会导致异常。
