@@ -1,11 +1,14 @@
 
+https://blog.csdn.net/asd199205/article/details/72841053
+
+
 android:inputType //设置文本的类型，用于帮助输入法显示合适的键盘类型
 android:imeOptions //设置右下角IME动作与编辑框相关的动作，如actionDone右下角将显示一个“完成”，而不设置默认是一个回车符号.下面会详细说明.
 
 
 我们在使用EditText中有时候会限制输入框中输入的文本类型,或者当弹出软键盘时,出现的是比较合适的输入法.如:我们在扣扣时,弹出的软件盘显示的就是数字,当输入密码时,右下角编辑框显示的是"完成",点击即会关闭软键盘.其实这也就是inputType和imeOptions属性来实现的,inputType属性可以指定键盘的类型,而imeOptions指定键盘右下角显示的Action.下面我们就来实现EditText使用过程中的小细节.
 
-这个类似QQ登录输入框,第一个EditText(用户名)的inputType设置的是text,imeOptions设置的是actionNext(下一个).第二个EditText(密码)的inputType设置的是textPassword,imeOptions设置的是actionDone(完成).当输入完用户名,点击键盘action下一个,会跳到密码输入框,当输入完密码后,点击键盘action完成,软键盘就会隐藏.
+### 1.这个类似QQ登录输入框,第一个EditText(用户名)的inputType设置的是text,imeOptions设置的是actionNext(下一个).第二个EditText(密码)的inputType设置的是textPassword,imeOptions设置的是actionDone(完成).当输入完用户名,点击键盘action下一个,会跳到密码输入框,当输入完密码后,点击键盘action完成,软键盘就会隐藏.
 
 
 ```xml
@@ -30,6 +33,32 @@ android:imeOptions //设置右下角IME动作与编辑框相关的动作，如ac
 ```
 
 #### 注意:这里需要注意的是,如果想让键盘显示Action,需要inputType和imeOptions结合使用才可以,只使用imeOptions是不会有效果的.只会显示默认的换行action.(不同手机的输入法不一样,可能显示的会有点小差别)
+
+### 2.接下来我们看一下inputType可以接受的参数:
+
+我们可以使用android：inputType属性指定要用于EditText对象的键盘类型.例如,如果你希望用户输入电子邮件地址，则应使用textEmailAddress输入类型.以下是输入类型常见的值:
+
+值 | 含义 | 
+----|------|
+
+"text" |普通文本键盘
+"textEmailAddress"| 带有@字符的普通文本键盘
+"textUri" |带有/字符的普通文本键盘.
+"number" |基本数字键盘.
+"phone" |电话样式键盘.
+"datetime" |时间日期.
+"date" |日期.
+
+android：inputType还允许指定某些键盘行为,例如是否大写所有新单词或使用自动完成和拼写建议等功能.以下是定义键盘行为的一些常见输入类型值:
+
+值 | 含义 | 
+----|------|
+"textCapSentences" |普通的文本键盘,大写每个新句子的第一个字母.
+
+"textCapWords" |大写每个单词的正常文本键盘.适合标题或人名.
+"textAutoCorrect" |正常文本键盘,可纠正拼写错误的字词.
+"textPassword" |这个就和设置password="true"是一样的效果.以原点的形式显示输入的文本.
+"textMultiLine" |普通文本键盘,允许用户输入包含换行符的长字符串（回车符）.
 
 
 
