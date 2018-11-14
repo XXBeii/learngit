@@ -16,7 +16,7 @@ Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，�
 
 #### 1、简单使用tint属性：
 	src属性 引用的是同一个 shape图形,第一个没有使用tint，第二个使用tint属性，减少资源文件创建
-	```
+```java
 	<ImageView
 	 	android:id="@+id/image1"
         android:id="@+id/bottom_tabs_item_img"
@@ -32,7 +32,7 @@ Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，�
         android:layout_height="wrap_content"
         android:tint="#f09"
         />
-        ```
+```
      当然src属性也可以使用图片资源如：对图片进行着色（矢量图）
 
 #### 2、tint这个属性，是ImageView有的，它可以给ImageView的src设置，除了tint 之外，还有backgroundTint，foregroundTint，drawableTint,它们分别对应对背景、前景、drawable进行着色处理。
@@ -40,16 +40,16 @@ Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，�
 ### 方法二：代码实现
 
 ```
-		Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
-        imageView.setImageDrawable(drawable);
+Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
+imageView.setImageDrawable(drawable);
 
-        Drawable.ConstantState state = drawable.getConstantState();
-        Drawable drawable1 = DrawableCompat.wrap(state == null ? drawable : state.newDrawable()).mutate();
+Drawable.ConstantState state = drawable.getConstantState();
+Drawable drawable1 = DrawableCompat.wrap(state == null ? drawable : state.newDrawable()).mutate();
 
-        drawable1.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        DrawableCompat.setTint(drawable1,ContextCompat.getColor(this,R.color.colorAccent));
+drawable1.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+ DrawableCompat.setTint(drawable1,ContextCompat.getColor(this,R.color.colorAccent));
 
-        imageView1.setImageDrawable(drawable1);
+imageView1.setImageDrawable(drawable1);
 ```
 DrawableCompat类：是Drawable的向下兼容类，我们为了在6.0一下兼容tint属性而使用的，有兴趣的看看源码哦，也是很简单的一个兼容类。
 
