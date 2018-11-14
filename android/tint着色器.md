@@ -15,7 +15,9 @@ Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，�
 ### 方法一：xml：
 
 #### 1、简单使用tint属性：
-	src属性 引用的是同一个 shape图形,第一个没有使用tint，第二个使用tint属性，减少资源文件创建
+
+src属性 引用的是同一个 shape图形,第一个没有使用tint，第二个使用tint属性，减少资源文件创建
+
 ```java
 	<ImageView
 	 	android:id="@+id/image1"
@@ -39,7 +41,7 @@ Tint 是 Android5.0 引入的一个属性，它可以在Android5.0 系统上，�
 
 ### 方法二：代码实现
 
-```
+```java
 Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher);
 imageView.setImageDrawable(drawable);
 
@@ -51,10 +53,11 @@ drawable1.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHei
 
 imageView1.setImageDrawable(drawable1);
 ```
+
 DrawableCompat类：是Drawable的向下兼容类，我们为了在6.0一下兼容tint属性而使用的，有兴趣的看看源码哦，也是很简单的一个兼容类。
 
-	- wrap方法：使用tint就必须调用该方法对Drawable进行一次包装。
-	- mutate方法：（个人简单的理解就是类似于对象的深拷贝与浅拷贝），如果不调用该方法，我们进行操作的就是原drawable，着色之后原drawable也改变的，所有两个ImageView都会显示着色之后的drawable。调用mutate后会对ConstantState进行一次拷贝
+- wrap方法：使用tint就必须调用该方法对Drawable进行一次包装。
+- mutate方法：（个人简单的理解就是类似于对象的深拷贝与浅拷贝），如果不调用该方法，我们进行操作的就是原drawable，着色之后原drawable也改变的，所有两个ImageView都会显示着色之后的drawable。调用mutate后会对ConstantState进行一次拷贝
 
 
 
