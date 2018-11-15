@@ -5,3 +5,7 @@ http://www.webhek.com/post/pathfinding.html
 
 
 http://www.webhek.com/post/control-user-cursor.html
+
+
+
+manhattan euclidean octile chebyshev
