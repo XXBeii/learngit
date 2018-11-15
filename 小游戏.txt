@@ -7,5 +7,7 @@ http://www.webhek.com/post/pathfinding.html
 http://www.webhek.com/post/control-user-cursor.html
 
 
+http://www.webhek.com/post/z-type.html
+
 
 manhattan euclidean octile chebyshev

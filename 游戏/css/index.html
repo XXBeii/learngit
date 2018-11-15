@@ -1,0 +1,1525 @@
+
+
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<title>纯 CSS 作品，没有图片和JavaScript，你能相信吗？</title>
+<head><base href=''>
+<style>
+:root {
+    --z_interface: 999;
+
+    --ground_size: 120em;
+    --ground_color: #006400;
+    --ground_anim_state:paused;
+
+    --underground_height:1em;
+    --underground_hheight:0.5em;
+    --underground_color:#573B0C;
+
+    --beach_width:5em;
+    --beach_color:#a69150;
+
+    --river_width:90em;
+    --river_color:linear-gradient(to right, #234567, #012345 25%, #012345 75%,
+        #234567);
+
+    --skeleton_color:rgba(255,255,255,0.2);
+    --skeleton_width:1px;
+
+    --pillars_height:40em;
+    --pillars_width:0.7em;
+    --pillars_color:#782721;
+    --pillars_parallel_co_inner_height:1em;
+	--pillars_parallel_co_height:5em;
+    --pillars_z:10;
+
+    --connector_width:3px;
+    --connector_color:#782721;
+
+    --pos_s1: 27em;
+    --pos_s2: 33em;
+
+    --road_color:linear-gradient(to bottom,
+        #6f6e63, #4d4c41 10%, #4d4c41 35%, #6f6e63 45%, transparent 45%, transparent 55%,
+        #4d4c41 55%,
+        #6f6e63, #4d4c41 65%, #4d4c41 90%, #6f6e63);
+    --barrier_height:14px;
+    --barrier_color:#671610;
+
+    --window_glass:#DDF;
+
+    --truck_cabin_length:0.5em;
+    --truck_cabin_height:0.6em;
+    --truck_cabin_color:#777;
+    --truck_length:2em;
+    --truck_width:1em;
+    --truck_height:0.8em;
+    --truck_color:#337;
+
+    --boat_height:0.5em;
+    --boat_color:#A00;
+    --boat_length:10em;
+    --boat_width:3em;
+    --boat_hull_color:#CCC;
+    --boat_lower_hull_color:#400;
+    --boat_cabin_height:0.9em;
+    --boat_cabin_length:8em;
+    --boat_cabin_width:2.2em;
+    --boat_cabin_start:1em;
+    --boat_cabin_color:#DADADA;
+    --boat_chimney_height:0.5em;
+    --boat_chimney_width:0.4em;
+    --boat_chimney_color:#555;
+    --boat_z:3; 
+
+    --helico_cabin_length:1.4em;
+    --helico_cabin_height:0.7em;
+    --helico_cabin_width:0.4em;
+    --helico_prop_color:#333;
+    --helico_color_1:#CCC;
+    --helico_color_2:#700;
+    --helico_color_3:#777;
+    --helico_tail_length:2.4em;
+    --helico_tail_height:0.3em;
+    --helico_tail_width:0.1em;
+}
+
+* { box-sizing: border-box; line-height:0; }
+*:focus { outline:0; }
+
+@keyframes fade {
+    0% { opacity:0; }
+    3% { opacity:1; }
+    77% { opacity:1; }
+    80% { opacity:0; }
+    100% { opacity:0; }
+}
+
+html, body, p, div, svg { margin:0; padding:0; }
+html, body { height: 100%; width: 100%; overflow:hidden; }
+body { background-color:#1d1e22; }
+
+/*
+ * INTERFACE
+ */
+.buttons {
+    position:absolute;
+    z-index:var(--z_interface);
+    line-height:initial;
+    display:block;
+    color:#555;
+    transform:translateX(-50%);
+    top:90%;
+    width:20%;
+    height:3em;
+}
+.buttons > a, .buttons > span {
+    position:absolute;
+    display:inline-block;
+    width:100%;
+    text-align:center;
+    font-size:1em;
+    font-family:serif;
+    font-weight:bold;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:0; margin:0; top:1.5em;
+}
+.buttons:hover { background-color:rgba(200,200,200,0.9); }
+.buttons > a { color:#555; text-decoration:none; }
+.scale:hover + .container { animation-play-state:running; }
+.rotate:hover + div + .container > .ground { animation-play-state:running,
+    running; }
+@keyframes show {
+    0% { opacity:0; }
+    90% { opacity:0; }
+    100% { opacity:1; }
+}
+.rotate { left:25%; animation:show 30s linear 1 forwards; }
+.scale { left:75%; }
+.mesh_fill { left:50%; }
+.c_mesh_fill { visibility:hidden; }
+.mesh_fill > span::after { content:'骨架'; }
+.c_mesh_fill:checked ~ .mesh_fill > span::after { content:'填充'; }
+
+/*
+ * MESH TRANSITION
+ */
+.c_mesh_fill:checked ~ .container > .ground, .c_mesh_fill:checked ~ .container > .ground > .river,
+.c_mesh_fill:checked ~ .container > .ground > .underground > div, .c_mesh_fill:checked ~ .container > .ground > .underground > div > div,
+.c_mesh_fill:checked ~ .container > .ground > .boat > div, .c_mesh_fill:checked ~ .container > .ground > .boat > div:after,
+.c_mesh_fill:checked ~ .container > .ground > .boat > .chimney > div, .c_mesh_fill:checked ~ .container > .ground > .beach > div,
+.c_mesh_fill:checked ~ .container > .ground > .connector >.connector_holder > div,
+.c_mesh_fill:checked ~ .container > .ground > .final_connector > .start_connector_holder > div,
+.c_mesh_fill:checked ~ .container > .ground > .start_connector > .start_connector_holder > div,
+.c_mesh_fill:checked ~ .container > .ground > .road > .truck > div,
+.c_mesh_fill:checked ~ .container > .ground > .road > .truck > div:after,
+.c_mesh_fill:checked ~ .container > .ground > .helicopter > div,
+.c_mesh_fill:checked ~ .container > .ground > .helicopter > .tail > div {
+    background-color:transparent !important;
+    background:transparent !important;
+}
+.c_mesh_fill:checked ~ .container > .ground > .road > .shadow { display:none; }
+.c_mesh_fill:checked ~ .container > .ground > .road:after, .c_mesh_fill:checked ~ .container > .ground > .connector, .c_mesh_fill:checked ~ .container > .ground >
+.final_connector, .c_mesh_fill:checked ~ .container > .ground > .start_connector, .c_mesh_fill:checked ~ .container > .ground > .road >
+.barrier { border-color:var(--skeleton_color); }
+.c_mesh_fill:checked ~ .container > .ground > .road > .barrier {
+    background:repeating-linear-gradient(45deg, transparent, transparent 6px,
+        var(--skeleton_color) 6px, var(--skeleton_color) 8px, transparent 8px),
+    repeating-linear-gradient(-45deg, transparent, transparent 6px,
+        var(--skeleton_color) 6px,
+        var(--skeleton_color) 8px, transparent 8px);
+}
+.c_mesh_fill:checked ~ .container > .ground svg { display:none; }
+.c_mesh_fill:checked ~ .container > .ground > .pillar > .pillar_holder {
+    background:radial-gradient(farthest-side at 100% 50%, transparent,
+        transparent 95%, var(--skeleton_color) 96%) !important;
+    border-color:var(--skeleton_color);
+}
+.c_mesh_fill:checked ~ .container > .ground > .pillar > .face1, .c_mesh_fill:checked ~ .container > .ground > .pillar > .face2,
+.c_mesh_fill:checked ~ .container > .ground > .pillar > .face3, .c_mesh_fill:checked ~ .container > .ground > .pillar > .face4 {
+    background:repeating-linear-gradient(to bottom, transparent, transparent
+        1.45em, rgba(0,0,0,0.2) 1.45em, rgba(0,0,0,0.2) 1.5em) !important;
+}
+.c_mesh_fill:checked ~ .container > .ground > .pillar > .pillar_holder:before {
+    background:radial-gradient(farthest-side at 0% 50%, transparent,
+        transparent 95%, var(--skeleton_color) 96%);
+}
+.c_mesh_fill:checked ~ .container > .ground > .road {
+    background:repeating-linear-gradient(to left, transparent, transparent
+        1.45em, var(--skeleton_color) 1.45em, var(--skeleton_color) 1.5em) !important;
+}
+.c_mesh_fill:checked ~ .container > .ground > .final_connector, .c_mesh_fill:checked ~ .container > .ground > .start_connector {
+    background:radial-gradient(farthest-side at 0% 130%, transparent,
+        transparent 98%, var(--skeleton_color) 98%, var(--skeleton_color)
+        99%, transparent 99%, transparent);
+}
+.c_mesh_fill:checked ~ .container > .ground > .pillar > .pillar_shadow, .c_mesh_fill:checked ~ .container > .ground > .pillar > div:after,
+.c_mesh_fill:checked ~ .container > .ground > .cshadow { display:none; }
+
+/*
+ * WORKSPACE ANIMATION
+ */
+
+@keyframes rotate_map {
+    0% { transform:rotateX(70deg) rotateZ(0deg); }
+    50% { transform:rotateX(70deg) rotateZ(181deg); }
+    100% { transform:rotateX(70deg) rotateZ(360deg); }
+}
+
+@keyframes first_pass_map {
+    0% { transform:rotateX(50deg) rotateZ(-80deg) translateX(50em)
+        translateZ(-18em) translateY(-10em); }
+    25% { transform:rotateX(90deg) translateY(25em) translateZ(-11em)
+        translateX(-40em) rotateY(30deg) rotateZ(100deg); }
+    35% { transform:rotateX(90deg) translateY(60em) rotateZ(80deg)
+        translateZ(-10em) translateX(-10em) rotateY(0deg); }
+    55% { transform:rotateX(90deg) translateY(60em) rotateZ(80deg)
+        translateZ(-10em) translateX(10em) rotateY(0deg); }
+    70% { transform:rotateX(85deg) translateY(60em) rotateZ(-70deg)
+        translateZ(-10em) translateX(30em) rotateY(-30deg); }
+    90% { transform:rotateZ(180deg); } 
+    100% { transform:rotateX(70deg) rotateZ(0deg); }
+}
+@keyframes scale_map {
+    0% { transform:scale(0.5) translateY(20em); }
+    100% { transform:scale(2) translateY(20em); }
+}
+
+/*
+ * WORKSPACE 
+ */
+.container {
+    position:fixed;
+    top:10%; left:0; right:0; bottom:0;
+    animation:scale_map 2s linear infinite alternate;
+    animation-play-state:paused;
+    transform-origin:center center 0;
+    perspective:1000px;
+}
+
+/*
+ * GROUND, WATER, UNDERGROUND
+ */
+.ground {
+    display:block;
+	position:absolute;
+    width:var(--ground_size);
+    height:calc(var(--ground_size)/2);
+    background-color:var(--ground_color);
+    top:calc(50% - var(--ground_size)/4);
+    left:calc(50% - var(--ground_size)/2);
+    transform-origin:50% 50% 0;
+    animation:
+        rotate_map 6s linear infinite forwards,
+        first_pass_map 30s cubic-bezier(0.42,0.2,0.58,0.8) 1;
+    animation-play-state:paused, running;
+    z-index:1;
+    transform-style:preserve-3d;
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+}
+
+.underground { position:absolute; width:100%; height:100%;
+    transform-style:preserve-3d; }
+.underground > .face1, .underground > .face2, .underground > .face3,
+.underground > .face4 {
+    position: absolute;
+    height:var(--underground_height);
+    background-color:var(--underground_color);
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+}
+.underground > .face1:after, .underground > .face2:after,
+.underground > .face3:after, .underground > .face4:after {
+    content:'';
+    position:absolute;
+    height:calc(var(--underground_height) + var(--pillars_height) + 5em);
+    border:1px #555 solid;
+}
+.underground > .face1, .underground > .face1:after,
+.underground > .face3, .underground > .face3:after
+{ width:var(--ground_size); }
+.underground > .face1 {
+    transform:rotateX(90deg) translateZ(var(--underground_hheight))
+        translateY(calc(-1*var(--underground_hheight)));
+}
+.underground > .face2, .underground > .face2:after,
+.underground > .face4, .underground > .face4:after
+{ width:60em; }
+.underground > .face2 {
+    transform:rotateX(90deg) rotateY(90deg)
+        translateY(calc(-1*var(--underground_hheight))) translateZ(90em)
+        translateX(calc(30em - var(--underground_height)/2));
+}
+.underground > .face3 {
+    transform:rotateX(90deg) translateZ(calc(-60em + var(--underground_hheight))) translateY(calc(-1*var(--underground_hheight)));
+}
+.underground > .face4 {
+    transform:rotateX(90deg) rotateY(90deg)
+        translateY(calc(-1*var(--underground_hheight))) translateZ(-30em)
+        translateX(calc(30em - var(--underground_height)/2));
+}
+.u_water {
+    height:var(--underground_height);
+    width:var(--river_width);
+    background:var(--river_color);
+    position:absolute;
+    left:15em;
+    z-index:20;
+    border-left:var(--skeleton_width) var(--skeleton_color) solid;
+    border-right:var(--skeleton_width) var(--skeleton_color) solid;
+}
+
+.beach > div {
+    position:absolute;
+    background:var(--beach_color);
+    width:var(--beach_width);
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+    height:100%;
+}
+.beach > .left { left:10em; }
+.beach > .right { right:10em; }
+
+.river { background:var(--river_color); width:var(--river_width); height:100%; position:absolute; left:50%;
+    transform-style:preserve-3d;
+    transform: translateX(-50%);
+    border-left:var(--skeleton_width) var(--skeleton_color) solid;
+    border-right:var(--skeleton_width) var(--skeleton_color) solid;
+}
+.river:after {
+    content:'';
+    width:var(--river_width); height:100%;
+    position:absolute;
+    background:linear-gradient(to right, rgba(255,255,255,0.1), transparent,
+        rgba(255,255,255,0.1));
+    transform:translateZ(1px);
+}
+@keyframes wave_left {
+    0% { left:2%; opacity:0; border-width:3px; }
+    20% { left:1.5%; opacity:0.7; border-width:5px; }
+    100% { left:0%; opacity:0.2; border-width:1px; }
+}
+@keyframes wave_right {
+    0% { right:2%; opacity:0; border-width:3px; }
+    20% { right:1.5%; opacity:0.7; border-width:5px; }
+    100% { right:0%; opacity:0.2; border-width:1px; }
+}
+.river > .wave {
+    position:absolute;
+    width:0;
+    height:100%;
+    border-left:5px #FFF solid;
+    transform:translateZ(1px);
+}
+.wave_left_1 { animation:wave_left 15s ease-out infinite; left:5%; }
+.wave_left_2 { animation:wave_left 15s ease-out infinite; left:5%;
+    animation-delay:-5s; }
+.wave_left_3 { animation:wave_left 15s ease-out infinite; left:5%;
+    animation-delay:-10s; }
+.wave_right_1 { animation:wave_right 15s ease-out infinite; right:5%; }
+.wave_right_2 { animation:wave_right 15s ease-out infinite; right:5%;
+    animation-delay:-5s; }
+.wave_right_3 { animation:wave_right 15s ease-out infinite; right:5%;
+    animation-delay:-10s; }
+
+/*
+ * BRIDGE PILLARS
+ */
+.pillar { position:absolute; transform-style:preserve-3d; }
+.pillar > .pillar_shadow {
+    position:absolute;
+    width:var(--pillars_width);
+    height:calc(var(--pillars_height)/2);
+    background-color:#011830;
+    content:'';
+    transform-origin:0% 100%;
+    transform:rotateZ(135deg) translateX(-0.5em);
+}
+.pillar > .face1, .pillar > .face2, .pillar > .face3, .pillar > .face4 {
+    position:absolute;
+    height:var(--pillars_height);
+    width:var(--pillars_width);
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+}
+.pillar > .face1 { transform:rotateX(90deg)
+    translateY(calc(var(--pillars_height)/2));
+    background-color:var(--pillars_color); }
+.pillar > .face2 { transform:rotateX(90deg) rotateY(90deg)
+    translateY(calc(var(--pillars_height)/2))
+    translateX(calc(var(--pillars_width)/2))
+    translateZ(calc(var(--pillars_width)/2));
+    background:linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.1));
+background-color:var(--pillars_color); }
+.pillar > .face3 { transform:rotateX(90deg) rotateY(90deg)
+    translateY(calc(var(--pillars_height)/2))
+    translateX(calc(var(--pillars_width)/2))
+    translateZ(calc(-1*var(--pillars_width)/2));
+    background-color:var(--pillars_color);
+}
+.pillar > .face4 { transform:rotateX(90deg)
+    translateY(calc(var(--pillars_height)/2))
+    translateZ(calc(-1*var(--pillars_width)));
+    background:linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+background-color:var(--pillars_color); }
+@keyframes pillar_flash {
+    0% { background-color:var(--skeleton_color); }
+    85% { background-color:var(--skeleton_color); }
+    90% { background-color:#F00; }
+    100% { background-color:#F00; }
+}
+.pillar > .top {
+    width:var(--pillars_width);
+    height:var(--pillars_width);
+    background-color:var(--skeleton_color);
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+    transform:translateZ(calc(var(--pillars_height)))
+        translateY(calc(var(--pillars_height)/2));
+}
+.pillar > .splash { width:6em; height:6em; transform:translateX(-1.7em)
+    translateY(17.6em); }
+@keyframes splash_anim {
+    0% { r:0.6em; opacity:0.5; }
+    100% { r:1.5em; opacity:0; }
+}
+.pillar > .splash > circle {
+    fill:transparent;
+    stroke:white;
+    animation:splash_anim 10s ease infinite;
+    /* Chrome doesn't support animate, Firefox doesn't support this */
+}
+.pillar_holder {
+    position:absolute;
+    top:0; left:0;
+    height:calc(var(--pos_s2) - var(--pos_s1));
+	width:calc(var(--pillars_parallel_co_height)/2);
+    background:radial-gradient(farthest-side at 100% 50%, transparent,
+        transparent 95%, var(--pillars_color) 96%);
+    border-left:var(--pillars_parallel_co_inner_height) var(--pillars_color) solid;
+    transform-origin:0% 0% 0px;
+    transform: rotateY(90deg) translateX(-30em)
+        translateZ(calc(var(--pillars_width)/2))
+        translateY(calc(-100% + var(--pos_s1) - var(--pillars_width)));
+}
+.pillar_holder:before {
+    position:absolute;
+    content:'';
+    right:calc(100% + var(--pillars_parallel_co_inner_height));
+    height:calc(var(--pos_s2) - var(--pos_s1));
+    width:calc(var(--pillars_parallel_co_height)/2 - var(--pillars_parallel_co_inner_height));
+    background:radial-gradient(farthest-side at 0% 50%, transparent,
+        transparent 95%, var(--pillars_color) 96%);
+}
+
+.pillar_holder.ph2 {
+    transform: rotateY(90deg) translateX(-23em)
+        translateZ(calc(var(--pillars_width)/2))
+        translateY(calc(-100% + var(--pos_s1) - var(--pillars_width)));
+}
+
+.pillar_holder.ph3 {
+    transform: rotateY(90deg) translateX(-37em)
+        translateZ(calc(var(--pillars_width)/2))
+        translateY(calc(-100% + var(--pos_s1) - var(--pillars_width)));
+}
+
+/*
+ * BRIDGE CONNECTORS
+ */
+.connector {
+    position:absolute;
+    width:calc(25% - var(--pillars_width) + 2*var(--skeleton_width));
+    height:calc(2*var(--pillars_height)/3);
+    transform-style:preserve-3d;
+    transform-origin:0% 75%;
+    transform:rotateX(90deg) translateY(calc(2*var(--pillars_height)/3));
+    border-radius:50%/90%;
+    border-bottom-left-radius:0;
+    border-bottom-right-radius:0;
+    border:var(--connector_width) var(--connector_color) solid;
+    border-bottom:none;
+}
+.start_connector_holder, .connector_holder {
+    transform-style:preserve-3d;
+    position:absolute;
+}
+.start_connector_holder > div, .connector_holder > div {
+    position:absolute;
+    width:2px;
+    background-color:var(--connector_color);
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+    top:-12px;
+}
+.connector_holder > div:nth-child(1) { height:13.5em; left:1.5em; }
+.connector_holder > div:nth-child(2) { height:9.6em; left:3em; }
+.connector_holder > div:nth-child(3) { height:7em; left:4.5em; }
+.connector_holder > div:nth-child(4) { height:5em; left:6em; }
+.connector_holder > div:nth-child(5) { height:3.5em; left:7.5em; }
+.connector_holder > div:nth-child(6) { height:2.3em; left:9em; }
+.connector_holder > div:nth-child(13) { height:1.5em; left:10.5em; }
+.connector_holder > div:nth-child(15) { height:1em; left:12em; }
+.connector_holder > div:nth-child(16) { height:1em; left:16.9em; }
+.connector_holder > div:nth-child(14) { height:1.5em; left:18.4em; }
+.connector_holder > div:nth-child(12) { height:13.5em; left:27.4em; }
+.connector_holder > div:nth-child(11) { height:9.6em; left:25.9em; }
+.connector_holder > div:nth-child(10) { height:7em; left:24.4em; }
+.connector_holder > div:nth-child(9) { height:5em; left:22.9em; }
+.connector_holder > div:nth-child(8) { height:3.5em; left:21.4em; }
+.connector_holder > div:nth-child(7) { height:2.3em; left:19.9em; }
+.start_connector_holder > div:nth-child(1) { height:21.3em; left:28.2em; }
+.start_connector_holder > div:nth-child(2) { height:18.5em; left:26.7em; }
+.start_connector_holder > div:nth-child(3) { height:15.5em; left:25.2em; }
+.start_connector_holder > div:nth-child(4) { height:13.5em; left:23.7em; }
+.start_connector_holder > div:nth-child(5) { height:11.65em; left:22.2em; }
+.start_connector_holder > div:nth-child(6) { height:10.3em; left:20.7em; }
+.start_connector_holder > div:nth-child(7) { height:8.6em; left:19.2em; }
+.start_connector_holder > div:nth-child(8) { height:7.5em; left:17.7em; }
+.start_connector_holder > div:nth-child(9) { height:6.5em; left:16.2em; }
+.start_connector_holder > div:nth-child(10) { height:5.5em; left:14.7em; }
+.start_connector_holder > div:nth-child(11) { height:4.6em; left:13.2em; }
+.start_connector_holder > div:nth-child(12) { height:3.8em; left:11.7em; }
+.start_connector_holder > div:nth-child(13) { height:3.2em; left:10.2em; }
+.start_connector_holder > div:nth-child(14) { height:2.75em; left:8.7em; }
+.start_connector_holder > div:nth-child(15) { height:2.3em; left:7.2em; }
+.start_connector {
+    position:absolute;
+    width:calc(25% + 2*var(--pillars_width));
+    height:calc(2*var(--pillars_height)/3);
+    transform-origin:0% 75%;
+    transform:rotateX(90deg) 
+        translateY(calc(2*var(--pillars_height)/3 + 2*var(--skeleton_width)));
+    background:radial-gradient(farthest-side at 0% 130%, transparent,
+        transparent 98%, var(--connector_color) 98%, var(--connector_color)
+        99%, transparent 99%, transparent);
+}
+.final_connector {
+    position:absolute;
+    width:calc(25% + 2*var(--pillars_width));
+    height:calc(2*var(--pillars_height)/3);
+    transform-origin:0% 75%;
+    transform:rotateX(90deg) translateX(100%) translateY(calc(2*var(--pillars_height)/3 + 2*var(--skeleton_width))) rotateY(180deg);
+    background:radial-gradient(farthest-side at 0% 130%, transparent,
+        transparent 98%, var(--connector_color) 98%, var(--connector_color)
+        99%, transparent 99%, transparent);
+}
+
+/*
+ * SHADOW OF CONNECTORS BETWEEN BRIDGE PILLARS
+ */
+.cshadow { border:var(--connector_width) #011830 solid; border-bottom:none; }
+.cshadow, .start_connector.cshadow {
+    transform:skewX(45deg) scaleY(0.3) translateY(30em) translateX(-0.4em);
+}
+.final_connector.cshadow {
+    overflow:hidden;
+    transform-style:preserve-3d;
+    transform:translateX(100%) skewX(45deg) scaleY(0.3) translateY(30em)
+        rotateY(180deg) translateZ(-1px) translateX(-0.4em);
+}
+.start_connector.cshadow, .final_connector.cshadow {
+    border:none !important;
+    background:radial-gradient(farthest-side at 0% 130%, transparent,
+        transparent 99%, rgba(0,0,0,0.3) 99%, rgba(0,0,0,0.3) 100%,
+        transparent 100%);
+}
+.cshadow > .connector_holder, .cshadow > .start_connector_holder,
+.cshadow > .final_connector_holder {
+    position:absolute;
+    transform-style:preserve-3d;
+    background-color:transparent !important;
+}
+.cshadow > .connector_holder > div, .cshadow > .start_connector_holder > div,
+.cshadow > .final_connector_holder > div
+{ background-color:rgba(0,0,0,0.3); }
+
+/*
+ * BRIDGE SIDES
+ */
+.pillar11 > .top, .pillar12 > .top, .pillar13 > .top, .pillar21 > .top,
+.pillar22 > .top, .pillar23 > .top
+{ animation:pillar_flash 5s linear infinite; }
+
+/* Right side */
+.pillar11 { left:25%; top:calc(-1*var(--pillars_height)/2 + var(--pos_s1) - var(--pillars_width)/2); }
+.pillar12 { left:50%; top:calc(-1*var(--pillars_height)/2 + var(--pos_s1) - var(--pillars_width)/2); }
+.pillar13 { left:75%; top:calc(-1*var(--pillars_height)/2 + var(--pos_s1) - var(--pillars_width)/2); }
+.c1112 { top:calc(-1*var(--pillars_height)/2 + var(--pos_s1)); left:calc(25% + var(--pillars_width) - var(--skeleton_width)); }
+.c1213 { top:calc(-1*var(--pillars_height)/2 + var(--pos_s1)); left:calc(50% + var(--pillars_width) - var(--skeleton_width)); }
+.start1 { top:calc(-1*var(--pillars_height)/2 + var(--pos_s1)); }
+.end1 { top:calc(-1*var(--pillars_height)/2 + var(--pos_s1)); left:calc(75% - var(--skeleton_width) -
+    var(--pillars_width)); }
+
+/* Left side */
+.pillar21 { left:25%; top:calc(-1*var(--pillars_height)/2 + var(--pos_s2) - var(--pillars_width)/2); }
+.pillar22 { left:50%; top:calc(-1*var(--pillars_height)/2 + var(--pos_s2) - var(--pillars_width)/2); }
+.pillar23 { left:75%; top:calc(-1*var(--pillars_height)/2 + var(--pos_s2) - var(--pillars_width)/2); }
+.pillar21 > .face1:after, .pillar22 > .face1:after,
+.pillar23 > .face1:after, .pillar21 > .face3:after,
+.pillar22 > .face3:after, .pillar23 > .face3:after {
+    background:linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6), rgba(0,0,0,0));
+    width:calc(100% + 2*var(--skeleton_width));
+    height:calc(var(--pillars_height)/7);
+    transform:translateX(calc(-1*var(--skeleton_width)))
+        translateY(calc(-1*var(--skeleton_width)));
+    content:'';
+    position:absolute;
+}
+.c2122 { top:calc(-1*var(--pillars_height)/2 + var(--pos_s2)); left:calc(25% + var(--pillars_width) - var(--skeleton_width)); }
+.c2223 { top:calc(-1*var(--pillars_height)/2 + var(--pos_s2)); left:calc(50% + var(--pillars_width) - var(--skeleton_width)); }
+.start2 { top:calc(-1*var(--pillars_height)/2 + var(--pos_s2)); }
+.end2 { top:calc(-1*var(--pillars_height)/2 + var(--pos_s2)); left:calc(75% - var(--skeleton_width) -
+    var(--pillars_width)); }
+
+/*
+ * ROAD
+ */
+.road {
+    position:absolute;
+    width:100%;
+    height:calc(var(--pos_s2) - var(--pos_s1));
+    background:var(--road_color);
+    top:calc(50% - (var(--pos_s2) - var(--pos_s1))/2);
+    transform:translateZ(calc(var(--pillars_height)/7));
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+    transform-style:preserve-3d;
+}
+.barrier {
+    position:absolute;
+    transform-style:preserve-3d;
+    height:var(--barrier_height);
+    width:100%;
+    border-top:calc(2*var(--skeleton_width)) var(--barrier_color) solid;
+    border-bottom:calc(2*var(--skeleton_width)) var(--barrier_color) solid;
+    background:repeating-linear-gradient(45deg, transparent, transparent 5px,
+        var(--barrier_color) 5px, var(--barrier_color) 7px, transparent 7px),
+    repeating-linear-gradient(-45deg, transparent, transparent 5px,
+        var(--barrier_color) 5px, var(--barrier_color) 7px, transparent 7px);
+}
+.barrier.right { bottom:100%; transform:rotateX(90deg)
+    translateZ(calc(-1*var(--barrier_height)/2));
+}
+.barrier.c_right { bottom:45%; transform:rotateX(90deg)
+    translateZ(calc(-1*var(--barrier_height)/2));
+}
+.barrier.left { top:100%; transform:rotateX(90deg)
+    translateZ(calc(var(--barrier_height)/2));
+}
+.barrier.c_left { top:45%; transform:rotateX(90deg)
+    translateZ(calc(var(--barrier_height)/2));
+}
+.barrier.shadow {
+    height:calc(var(--barrier_height)/2);
+    --barrier_color:#333;
+}
+.barrier.c { transform: translateZ(calc(var(--barrier_height)/2)); }
+.road_shadow {
+    width:100%;
+    height:45%;
+    top:50%;
+    transform:translateZ(calc(-1*var(--pillars_height)/7));
+    background-color:transparent !important;
+    background:linear-gradient(to right, rgba(0,0,0,0.2) 20em, #011830 30em,
+        #011830 100em, rgba(0,0,0,0.2) 110em);
+}
+.road_shadow.lane2 {
+    transform:translateZ(calc(-1*var(--pillars_height)/7))
+        translateY(calc(0.55*(var(--pos_s2) - var(--pos_s1))));
+}
+
+/*
+ * TRUCKS
+ */
+.truck { position:absolute; transform-style:preserve-3d; }
+.truck > .back, .truck > .left, .truck > .right, .truck > .front, .truck > .top,
+.truck > .cabin_front, .truck > .cabin_top, .truck > .cabin_right, .truck >
+.cabin_left, .truck > .cabin_back {
+    position:absolute;
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+    transform-origin:0% 0%;
+}
+.truck > .back, .truck > .left, .truck > .right, .truck > .front, .truck > .top
+{ background-color:var(--truck_color); }
+.truck > .cabin_front, .truck > .cabin_top, .truck > .cabin_right, .truck > .cabin_left, .truck > .cabin_back {
+    background-color:var(--truck_cabin_color);
+}
+.truck > .back, .truck > .front { height:var(--truck_width); width:var(--truck_height); }
+.truck > .back { transform:rotateY(-90deg); }
+.truck > .front { transform:rotateY(-90deg) translateZ(calc(-1*var(--truck_length))); }
+.truck > .right, .truck > .left { width:var(--truck_length); height:var(--truck_height); }
+.truck > .right { transform:rotateX(90deg); }
+.truck > .left { transform:rotateX(90deg) translateZ(calc(-1*var(--truck_width))); }
+.truck > .top { width:var(--truck_length); height:var(--truck_width);
+    transform:translateZ(var(--truck_height)); }
+.truck > .cabin_front, .truck > .cabin_back { width:var(--truck_cabin_height);
+    height:var(--truck_width);
+}
+.truck > .cabin_front { transform:rotateY(-90deg) translateZ(calc(var(--truck_cabin_length) + 2px)); }
+.truck > .cabin_back { transform:rotateY(-90deg) translateZ(2px); }
+.truck > .cabin_left, .truck > .cabin_right { width:var(--truck_cabin_length);
+    height:var(--truck_cabin_height); }
+.truck > .cabin_left:after, .truck > .cabin_right:after {
+    position:absolute;
+    bottom:0;
+    background-color:var(--window_glass);
+    content:'';
+    width:100%;
+    height:30%;
+}
+.truck > .cabin_front:after {
+    position:absolute;
+    right:0;
+    background-color:var(--window_glass);
+    content:'';
+    width:30%;
+    height:100%;
+}
+.truck > .cabin_left { transform:rotateX(90deg)
+    translateZ(calc(-1*var(--truck_width)))
+    translateX(calc(-1*var(--truck_cabin_length) - 2px));
+}
+.truck > .cabin_right { transform:rotateX(90deg)
+    translateX(calc(-1*var(--truck_cabin_length) - 2px));
+}
+.truck > .cabin_top { width:var(--truck_cabin_length);
+    height:var(--truck_width);
+    transform:translateZ(var(--truck_cabin_height))
+        translateX(calc(-1*var(--truck_cabin_length) - 2px));
+}
+.truck_shadow {
+    width:var(--truck_length);
+    height:var(--truck_width);
+    transform:translateY(5px) translateX(5px);
+}
+.truck_cabin_shadow {
+    width:var(--truck_cabin_length);
+    height:var(--truck_width);
+    transform:translateY(5px) translateX(calc(-1*var(--truck_cabin_length) + 2px));
+}
+@keyframes auto_right {
+    0% { right:0%; }
+    80% { right:100%; }
+    100% { right:100%; }
+}
+
+.truck1 {
+    position:absolute;
+    transform:translateZ(3px);
+    top:10%;
+    animation:auto_right 30s linear infinite;
+}
+.truck1 > div { animation:fade 30s linear infinite; }
+.truck1 > .left, .truck1 > .front { --truck_color:#226; }
+.truck1 > .cabin_left, .truck1 > .cabin_back { --truck_cabin_color:#555; }
+/*
+ * BOATS
+ */
+@keyframes boat_movement {
+    0% { transform:translateY(calc(-1*var(--boat_length)/2)); }
+    80% { transform:translateY(calc(-1*var(--ground_size)/2)); }
+    81% { transform:translateY(-1000em); }
+    100% { transform:translateY(-1000em); }
+}
+@keyframes rev_boat_movement {
+    0% { transform:translateY(calc(-1*var(--ground_size)/2 +
+        var(--boat_length)/2)) rotateZ(180deg);}
+    80% { transform:translateY(calc(var(--boat_length)/2)) rotateZ(180deg); } 
+    81% { transform:translateY(100em) rotateZ(180deg); }
+    100% { transform:translateY(100em) rotateZ(180deg); } 
+}
+.boat { position:absolute; transform-style:preserve-3d; z-index:var(--boat_z); }
+.boat > .face1, .boat > .face2, .boat > .face3, .boat > .face4 {
+    position:absolute;
+    height:var(--boat_height);
+    border-top:var(--skeleton_width) var(--skeleton_color) solid;
+    border-bottom:var(--skeleton_width) var(--skeleton_color) solid;
+    background-color:var(--boat_hull_color);
+    transform-origin:0% 0%;
+}
+.boat > .face1:after, .boat > .face2:after, .boat > .face3:after,
+.boat > .face4:after  {
+    position:absolute;
+    content:'';
+    width:100%;
+    background-color:var(--boat_lower_hull_color);
+    height:4px;
+    top:-1px;
+}
+.boat > .face1 { width:var(--boat_width); transform:rotateX(90deg); }
+.boat > .face2 { width:var(--boat_length); transform:rotateX(90deg) rotateY(90deg); }
+.boat > .face3 { width:var(--boat_width); transform:rotateX(90deg) translateZ(calc(-1*var(--boat_length))); }
+.boat > .face4 { width:var(--boat_length); transform:rotateX(90deg) rotateY(90deg) translateZ(calc(var(--boat_width))); }
+.boat > .top {
+    position:absolute;
+    width:var(--boat_width);
+    height:var(--boat_length);
+    background-color:#663300;
+    transform:translateZ(calc(var(--boat_height)));
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+}
+.boat > .cabin_face1, .boat > .cabin_face2, .boat > .cabin_face3, .boat
+> .cabin_face4, .boat > .cabin_top, .boat > .cabin_split {
+    position:absolute;
+    background-color:var(--boat_cabin_color);
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+}
+.boat > .cabin_face1, .boat > .cabin_face2, .boat > .cabin_face3, .boat
+> .cabin_face4  { height:var(--boat_cabin_height); }
+.boat > .cabin_face1 {
+    width:var(--boat_cabin_width);
+    transform:rotateX(90deg) translateY(calc(2*var(--boat_height) - 1px))
+        translateX(calc((var(--boat_width) - var(--boat_cabin_width))/2))
+        translateZ(calc(-1*var(--boat_length) + var(--boat_cabin_length) +
+            var(--boat_cabin_start)));
+}
+.boat > .cabin_face2 {
+    width:var(--boat_cabin_length);
+    transform:rotateX(90deg) rotateY(90deg)
+        translateY(calc(2*var(--boat_height) - 1px))
+        translateZ(calc(var(--boat_width) - 2*var(--boat_cabin_width)))
+        translateX(calc(var(--boat_length) - var(--boat_cabin_length)/2 -
+            var(--boat_cabin_start)));
+}
+.boat > .cabin_face3 {
+    width:var(--boat_cabin_width);
+    transform:rotateX(90deg) translateY(calc(2*var(--boat_height) - 1px))
+        translateX(calc((var(--boat_width) - var(--boat_cabin_width))/2))
+        translateZ(calc(-1*var(--boat_length) +
+            var(--boat_cabin_start)));
+}
+.boat > .cabin_face4 {
+    width:var(--boat_cabin_length);
+    transform:rotateX(90deg) rotateY(90deg)
+        translateY(calc(2*var(--boat_height) - 1px))
+        translateZ(calc(var(--boat_width) - 3*var(--boat_cabin_width)))
+        translateX(calc(var(--boat_length) - var(--boat_cabin_length)/2 -
+            var(--boat_cabin_start)));
+}
+.boat > .cabin_top {
+    width:var(--boat_cabin_width);
+    height:var(--boat_cabin_length);
+    transform:translateZ(calc(-1px + var(--boat_height) + var(--boat_cabin_height)))
+        translateX(calc((var(--boat_width) - var(--boat_cabin_width))/2))
+        translateY(calc(2em - var(--boat_cabin_start)/2 - 1px));
+}
+.boat > .cabin_split {
+    width:var(--boat_width);
+    height:calc(var(--boat_cabin_length) + 1em);
+    background-color:#663300;
+    transform:translateZ(calc(var(--boat_height) + var(--boat_cabin_height)/2))
+        translateY(calc(var(--boat_cabin_start)/2 + 2px));
+}
+.chimney { position:absolute; transform-style:preserve-3d;
+    top:calc(4*var(--boat_length)/5); left:0.4em; }
+.chimney > .face1, .chimney > .face2 {
+    position:absolute;
+    width:var(--boat_chimney_width);
+    height:var(--boat_chimney_height);
+    background:var(--boat_chimney_color);
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+    transform-origin:0% 0%;
+}
+.chimney > .face1 { transform:rotateX(90deg) translateY(var(--boat_height))
+    translateX(calc(-1*var(--boat_chimney_width)/2)); }
+.chimney > .face2 { transform:rotateX(90deg) rotateY(90deg)
+    translateY(var(--boat_height)) translateX(calc(-1*var(--boat_chimney_width)/2)); }
+@keyframes smoke {
+    0% { transform:translateZ(calc(2*var(--boat_chimney_height)))
+        translateX(calc(-1*var(--boat_chimney_width)/2))
+        translateY(calc(-1*var(--boat_chimney_width)/2)) scale(0.2); }
+    70% { opacity:0.9: }
+    100% { transform:translateZ(calc(4*var(--boat_chimney_height)))
+        translateX(calc(-1*var(--boat_chimney_width)/2))
+        translateY(2em) scale(1);
+        opacity:0; }
+}
+.chimney > .smoke {
+    position:absolute; transform-style:preserve-3d;
+    animation:smoke 3s ease infinite forwards;
+    width:1em; height:1em; background-color:#FFF;
+    transform-origin:50% 50%; border:var(--skeleton_width) var(--skeleton_color)
+solid;}
+@keyframes boat_trail {
+    0% { transform:translateX(-3em) translateY(-2.7em); opacity:0; }
+    20% { transform:translateX(-3em) translateY(-2.2em); opacity:0.4; }
+    100% { transform:translateX(-3em) translateY(0em); opacity:0; }
+}
+.boat_trail { position:absolute; top:10em;
+    animation:boat_trail 6s linear infinite; z-index:calc(var(--boat_z) -1); }
+.boat_trail > line { stroke:#FFF; stroke-width:2px; }
+.boat1 { left:30%; top:100%; animation:boat_movement 60s linear infinite; }
+.boat1 > div { background-color:var(--boat_chimney_color); }
+.boat1 .face { animation:fade 60s linear infinite; }
+.boat2 { left:70%; top:100%; animation:boat_movement 70s linear infinite;
+    animation-delay:-7s; }
+.boat2 > div { background-color:var(--boat_chimney_color); }
+.boat2 .face { animation:fade 70s linear infinite; animation-delay:-7s; }
+.boat3 { left:57%; top:100%; animation:rev_boat_movement 55s linear forwards infinite;
+    animation-delay:-12s; }
+.boat3 > div { background-color:var(--boat_chimney_color); }
+.boat3 .face { animation:fade 55s linear infinite; animation-delay:-12s; }
+.r_boat_shadow, .boat_shadow {
+    width:var(--boat_width);
+    height:var(--boat_length);
+}
+.boat_shadow { transform:translateY(5px) translateX(5px); }
+.r_boat_shadow { transform:translateY(-5px)
+    translateX(-5px); }
+
+/*
+ * HELICOPTER
+ */
+.helicopter {
+    position:absolute; transform-style:preserve-3d; 
+    transform:translateZ(10em) translateX(100em) translateY(20em);
+    animation:helico_path 30s linear infinite;
+}
+.cabin {
+    background:linear-gradient(var(--helico_color_2) 50%,
+        var(--helico_color_1) 50%);
+    position:absolute;
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+}
+.cabin.front, .cabin.back { height:var(--helico_cabin_height);
+    width:var(--helico_cabin_width); transform-origin:0% 0% 0; }
+.cabin.left, .cabin.right { height:var(--helico_cabin_height);
+    width:var(--helico_cabin_length); transform-origin:0% 0% 0; }
+.cabin.top, .cabin.bottom { height:var(--helico_cabin_length);
+    width:var(--helico_cabin_width); }
+.cabin.front { transform:rotateX(90deg); }
+.cabin.back { transform:rotateX(90deg) translateZ(var(--helico_cabin_length)); }
+.cabin.top { transform:translateZ(calc(var(--helico_cabin_height)))
+    translateY(-100%); }
+.cabin.bottom { transform:translateY(-100%); }
+.cabin.right { transform:rotateX(90deg) rotateY(-90deg); }
+.cabin.left { transform:rotateX(90deg) rotateY(-90deg)
+    translateZ(calc(-1*var(--helico_cabin_width))); }
+.tail {
+    position:absolute; transform-style:preserve-3d;
+    transform:translateY(calc(-1*var(--helico_tail_length)/2))
+        translateX(calc(var(--helico_tail_height)/2))
+        translateZ(4px);
+}
+.tail > .left, .tail > .right, .tail > .bottom, .tail > .top, .tail > .back {
+    background-color:var(--helico_color_3);
+    position:absolute;
+    border:var(--skeleton_width) var(--skeleton_color) solid;
+}
+.tail > .left, .tail > .right {
+    height:var(--helico_tail_height);
+    width:var(--helico_tail_length); transform-origin:0% 0% 0;
+}
+.tail > .top, .tail > .bottom {
+    height:var(--helico_tail_length);
+    width:var(--helico_tail_width);
+}
+.tail > .back {
+    height:var(--helico_tail_height);
+    width:var(--helico_tail_width); transform-origin:0% 0% 0;
+    transform:rotateX(90deg) translateZ(var(--helico_tail_length));
+}
+.tail > .top {
+    transform:translateZ(calc(var(--helico_tail_height))) translateY(-100%); 
+}
+.tail > .bottom { transform:translateY(-100%); }
+.tail > .right { transform:rotateX(90deg) rotateY(-90deg); }
+.tail > .left {
+    transform:rotateX(90deg) rotateY(-90deg)
+        translateZ(calc(-1*var(--helico_tail_width)));
+}
+
+/*
+ * PROPELLERS
+ */
+@keyframes prop_anim {
+    0% { transform:rotateZ(0deg); }
+    50% { transform:rotateZ(181deg); }
+    100% { transform:rotateZ(360deg); }
+}
+.large_prop_wrapper {
+    position:absolute;
+    width:calc(4*var(--helico_cabin_length));
+    height:calc(4*var(--helico_cabin_length));
+    transform-origin:50% 50% 0;
+    transform:translateZ(calc(3px + var(--helico_cabin_height)))
+        translateX(-50%)
+        translateY(calc(-1*(2*var(--helico_cabin_length)/3 + 50%)));
+}
+.large_prop {
+    position:absolute;
+    width:calc(4*var(--helico_cabin_length));
+    height:calc(4*var(--helico_cabin_length));
+    transform-origin:50% 50% 0;
+    background:linear-gradient(transparent, transparent 47%,
+        var(--helico_prop_color) 47%,
+        var(--helico_prop_color) 53%,
+        transparent 53%, transparent),
+        linear-gradient(to right, transparent, transparent 47%,
+            var(--helico_prop_color) 47%,
+            var(--helico_prop_color) 53%,
+            transparent 53%, transparent);
+    animation:prop_anim 0.1s linear infinite;
+}
+.small_prop_wrapper {
+    position:absolute;
+    width:calc(4*var(--helico_tail_height));
+    height:calc(4*var(--helico_tail_height));
+    transform-origin:0% 0% 0;
+    transform:rotateY(90deg) translateX(-50%)
+        translateY(calc(-1*(var(--helico_tail_length) + 7px)))
+        translateX(-3px);
+}
+.small_prop {
+    position:absolute;
+    width:calc(4*var(--helico_tail_height));
+    height:calc(4*var(--helico_tail_height));
+    transform-origin:50% 50% 0;
+    background:linear-gradient(transparent, transparent 44%,
+        var(--helico_prop_color) 44%,
+        var(--helico_prop_color) 56%, transparent 56%, transparent);
+    animation:prop_anim 0.1s linear infinite;
+}
+
+/*
+ * HELICO PATH
+ */
+@keyframes helico_path {
+    0% { transform: translateZ(10em) translateX(100em) translateY(20em); }
+    7% { transform: translateZ(18em) translateX(110em) translateY(13em)
+        rotateX(30deg); }
+    10% { transform: translateZ(20em) translateX(112em) translateY(10em)
+        rotateX(-10deg); }
+    17% { transform: translateZ(23.5em) translateX(110em) translateY(27em)
+        rotateX(-40deg); }
+    20% { transform: translateZ(24em) translateX(110em) translateY(33em)
+        rotateX(-40deg) rotateZ(30deg) rotateY(-40deg); }
+    30% { transform: translateZ(18em) translateX(80em) translateY(50em)
+        rotateX(-60deg) rotateZ(50deg) rotateY(-60deg); }
+    40% { transform: translateZ(14em) translateX(50em) translateY(40em)
+        rotateX(-60deg) rotateZ(50deg) rotateY(-120deg); }
+    50% { transform: translateZ(9em) translateX(40em) translateY(25em)
+        rotateX(-30deg) rotateZ(20deg) rotateY(20deg); }
+    75% { transform: translateZ(7em) translateX(40em) translateY(13em)
+        rotateX(10deg) rotateZ(-60deg) rotateY(20deg); }
+    87% { transform: translateZ(7em) translateX(60em) translateY(16em)
+        rotateX(-20deg) rotateZ(-60deg) rotateY(30deg); }
+    100% { transform: translateZ(10em) translateX(100em) translateY(20em); }
+}
+
+/*
+ * ADS
+ */
+.ads {
+    position:absolute;
+    top:-30%;
+    right:3px;
+    font-size:1em;
+    color:rgba(255,255,255,0.5);
+    line-height:initial;
+}
+.ads.tright { text-align:right; transform:rotateX(180deg) scale(0.6); }
+.ads.tleft { text-align:left; transform: rotateZ(180deg) scale(0.6); }
+
+/*
+ * SHADOWS
+ */
+.shadow {
+    position:absolute;
+    background-color:rgba(0,0,0,0.3) !important;
+    box-shadow:0 0 3px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+<body>
+<div class="banner"></div>
+<input type="checkbox" class="c_mesh_fill" id="mesh_fill" checked />
+<label for="mesh_fill" class="buttons mesh_fill"><span></span></label>
+<div class="buttons rotate"><span>旋转</span></div>
+<div class="buttons scale"><span>缩放</span></div>
+<div class="container">
+<div id="ground" class="ground">
+<div class="beach">
+<div class="left"></div>
+<div class="right"></div>
+</div>
+<div class="underground">
+<div class="face1"><div class="u_water"></div></div>
+<div class="face2"></div>
+ <div class="face3"><div class="u_water"></div></div>
+<div class="face4"></div>
+</div>
+<div class="river">
+<div class="wave wave_left_1"></div>
+<div class="wave wave_left_2"></div>
+<div class="wave wave_left_3"></div>
+<div class="wave wave_right_1"></div>
+<div class="wave wave_right_2"></div>
+<div class="wave wave_right_3"></div>
+</div>
+<div class="start1 start_connector">
+<div class="start_connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="pillar pillar11">
+<div class="face1"></div>
+<div class="face2"></div>
+<div class="face3"></div>
+<div class="face4"></div>
+<div class="top"></div>
+<div class="pillar_holder"></div>
+<div class="pillar_holder ph2"></div>
+<div class="pillar_holder ph3"></div>
+<div class="pillar_shadow"></div>
+<svg class="splash">
+<circle cx="2em" cy="2em" r="2em" stroke-width="2">
+<animate attributeName="r" begin="0s" dur="5s" repeatCount="indefinite" from="0.7em" to="3.5em" />
+</circle>
+</svg>
+</div>
+<div class="connector c1112">
+<div class="connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="pillar pillar12">
+<div class="face1"></div>
+<div class="face2"></div>
+<div class="face3"></div>
+<div class="face4"></div>
+<div class="top"></div>
+<div class="pillar_holder"></div>
+<div class="pillar_holder ph2"></div>
+<div class="pillar_holder ph3"></div>
+<div class="pillar_shadow"></div>
+<svg class="splash">
+<circle cx="2em" cy="2em" r="2em" stroke-width="2">
+<animate attributeName="r" begin="0s" dur="5s" repeatCount="indefinite" from="0.7em" to="3.5em" />
+</circle>
+</svg>
+</div>
+<div class="connector c1213">
+<div class="connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="pillar pillar13">
+<div class="face1"></div>
+<div class="face2"></div>
+<div class="face3"></div>
+<div class="face4"></div>
+<div class="top"></div>
+<div class="pillar_holder"></div>
+<div class="pillar_holder ph2"></div>
+<div class="pillar_holder ph3"></div>
+<div class="pillar_shadow"></div>
+<svg class="splash">
+<circle cx="2em" cy="2em" r="2em" stroke-width="2">
+<animate attributeName="r" begin="0s" dur="5s" repeatCount="indefinite" from="0.7em" to="3.5em" />
+</circle>
+</svg>
+</div>
+<div class="end1 final_connector">
+<div class="start_connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="road">
+<div class="barrier right"></div>
+<div class="barrier left"></div>
+<div class="barrier c_right"></div>
+<div class="barrier c_left"></div>
+<div class="barrier shadow"></div>
+<div class="barrier c shadow"></div>
+<div class="truck truck1">
+<div class="cabin_front"></div>
+<div class="cabin_right"></div>
+<div class="cabin_back"></div>
+<div class="cabin_left"></div>
+<div class="cabin_top"></div>
+<div class="back"></div>
+<div class="left">
+<p class="ads tright">K.C.</p>
+</div>
+<div class="front"></div>
+<div class="right">
+<p class="ads tleft">K.C.</p>
+</div>
+<div class="top"></div>
+<div class="truck_cabin_shadow shadow"></div>
+<div class="truck_shadow shadow"></div>
+</div>
+<div class="road_shadow lane1 shadow"></div>
+<div class="road_shadow lane2 shadow"></div>
+</div>
+<div class="start2 start_connector">
+<div class="start_connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="start2 start_connector cshadow">
+<div class="start_connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="pillar pillar21">
+ <div class="face1"></div>
+<div class="face2"></div>
+<div class="face3"></div>
+<div class="face4"></div>
+<div class="top"></div>
+<div class="pillar_shadow"></div>
+<svg class="splash">
+<circle cx="2em" cy="2em" r="2em" stroke-width="2">
+<animate attributeName="r" begin="0s" dur="5s" repeatCount="indefinite" from="0.7em" to="3.5em" />
+</circle>
+</svg>
+</div>
+<div class="connector c2122">
+<div class="connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="connector c2122 cshadow">
+<div class="connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="pillar pillar22">
+<div class="face1"></div>
+<div class="face2"></div>
+<div class="face3"></div>
+<div class="face4"></div>
+<div class="top"></div>
+<div class="pillar_shadow"></div>
+<svg class="splash">
+<circle cx="2em" cy="2em" r="2em" stroke-width="2">
+<animate attributeName="r" begin="0s" dur="5s" repeatCount="indefinite" from="0.7em" to="3.5em" />
+</circle>
+</svg>
+</div>
+<div class="connector c2223">
+<div class="connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="connector c2223 cshadow">
+<div class="connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="pillar pillar23">
+<div class="face1"></div>
+<div class="face2"></div>
+<div class="face3"></div>
+<div class="face4"></div>
+<div class="top"></div>
+<div class="pillar_shadow"></div>
+<svg class="splash">
+<circle cx="2em" cy="2em" r="2em" stroke-width="2">
+<animate attributeName="r" begin="0s" dur="5s" repeatCount="indefinite" from="0.7em" to="3.5em" />
+</circle>
+</svg>
+</div>
+<div class="end2 final_connector">
+<div class="start_connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="end2 final_connector cshadow">
+<div class="start_connector_holder">
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+</div>
+</div>
+<div class="boat1 boat">
+<div class="face face1"></div>
+<div class="face face2"></div>
+<div class="face face3"></div>
+<div class="face face4"></div>
+<div class="face top"></div>
+<div class="chimney">
+<div class="face face1"></div>
+<div class="face face2"></div>
+<div class="smoke"></div>
+</div>
+<svg class="boat_trail">
+<line x1="6em" y1="0" x2="7em" y2="2em"></line>
+<line x1="3em" y1="0" x2="2em" y2="2em"></line>
+</svg>
+<div class="face boat_shadow shadow"></div>
+</div>
+<div class="boat2 boat">
+<div class="face cabin_face1"></div>
+<div class="face cabin_face2"></div>
+<div class="face cabin_face3"></div>
+<div class="face cabin_face4"></div>
+<div class="face cabin_split"></div>
+<div class="face cabin_top"></div>
+<div class="face face1"></div>
+<div class="face face2"></div>
+<div class="face face3"></div>
+<div class="face face4"></div>
+<div class="face top"></div>
+<svg class="boat_trail">
+<line x1="6em" y1="0" x2="7em" y2="2em"></line>
+<line x1="3em" y1="0" x2="2em" y2="2em"></line>
+</svg>
+<div class="face boat_shadow shadow"></div>
+</div>
+<div class="boat3 boat">
+<div class="face face1"></div>
+<div class="face face2"></div>
+<div class="face face3"></div>
+<div class="face face4"></div>
+<div class="face top"></div>
+<div class="chimney">
+<div class="face face1"></div>
+<div class="face face2"></div>
+<div class="smoke"></div>
+</div>
+<svg class="boat_trail">
+<line x1="6em" y1="0" x2="7em" y2="2em"></line>
+<line x1="3em" y1="0" x2="2em" y2="2em"></line>
+</svg>
+ <div class="face r_boat_shadow shadow"></div>
+</div>
+<div class="helicopter">
+<div class="cabin front"></div>
+<div class="cabin left"></div>
+<div class="cabin right"></div>
+<div class="cabin back"></div>
+<div class="cabin top"></div>
+<div class="cabin bottom"></div>
+<div class="large_prop_wrapper">
+<div class="large_prop"></div>
+</div>
+<div class="tail">
+<div class="left"></div>
+<div class="right"></div>
+<div class="back"></div>
+<div class="top"></div>
+<div class="bottom"></div>
+<div class="small_prop_wrapper">
+<div class="small_prop"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- <script>  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');  ga('create', 'UA-2477810-34', 'auto');  ga('send', 'pageview');</script> <span id='pageendflag'></span> <script type="text/javascript"  src="//yjsstatic.baidu.com/M01/1c/57/4af1eab42366e783159da991d8761b93PdK0SNri.js"></script> -->
+</body>
+</html>
+<!-- <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["qzone","tsina","weixin","tieba","douban","sqq","youdao","mail","fbook","twi","linkedin","evernotecn","copy"],"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"0","bdPos":"right","bdTop":"100"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script> -->
+<div style="width: 1rem; position: absolute; left: 0; top: 100px; color: #fff; writing-mode: vertical-rl">纯 CSS 作品，你能相信吗？</div>
