@@ -1,0 +1,18 @@
+https://blog.csdn.net/litefish/article/details/52471273
+
+
+clipToPadding：ViewGroup属性，当padding非空的时候，ViewGroup会根据padding值来裁剪子View。
+默认情况下，clipToPadding为true，表示会裁剪子View并且resize边界效果。
+实际上clipToPadding影响的是绘制的时候是否绘制padding里子View内容。可以这么理解，clipToPadding对measure和layout无影响，只会影响draw阶段。无论clipToPadding是true还是false，滚的时候，都会滚到padding里去，但是clipToPadding为true，就会clip，这样padding里的部分就看不到了。回头看看刚才的问题，滚动前，布局是考虑padding的，所以padding里没有child元素，然后滚动的时候会把child滚动到padding里去，而由于clipToPadding=false，不裁剪，所以我们能看到padding里的child。如果设置clipToPadding=true，那padding里的child就会被裁剪掉，我们就看不到了。
+
+
+关键代码可以看ViewGroup的dispatchDraw
+
+final boolean clipToPadding = (flags & CLIP_TO_PADDING_MASK) == CLIP_TO_PADDING_MASK;
+        if (clipToPadding) {
+            clipSaveCount = canvas.save();
+            canvas.clipRect(mScrollX + mPaddingLeft, mScrollY + mPaddingTop,
+                    mScrollX + mRight - mLeft - mPaddingRight,
+                    mScrollY + mBottom - mTop - mPaddingBottom);
+        }
+        

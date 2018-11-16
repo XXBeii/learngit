@@ -1,0 +1,1 @@
+  clipChildren：如果子view比parent大的时候，是否裁剪，默认为true裁剪。也是在绘制阶段作用的。子view是否可以超出父view的区域

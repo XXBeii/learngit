@@ -1,0 +1,39 @@
+https://blog.csdn.net/songzi1228/article/details/78962327 
+
+
+方法一：
+
+
+可以避开relativelayout,给其设置一个imageview，然后给imageview加载图片就行了：
+
+<RelativeLayout
+            android:id="@+id/rlBottomBanner"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true">
+            <ImageView
+                android:id="@+id/ivBg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"/>
+</RelativeLayout>
+
+
+
+
+
+方法二：
+
+public void LoadImgToBackground(View contentView, Object img, final View view) {
+        Glide.with(contentView).load(img).into(new SimpleTarget<Drawable>() {
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                view.setBackground(resource);
+            }
+        });
+}
+
+
+调用：
+LoadImgToBackground(contentView, imageUrl, rvNavigation);
