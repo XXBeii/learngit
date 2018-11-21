@@ -1,3 +1,12 @@
+<!-- MarkdownTOC -->
+
+- 1.这个类似QQ登录输入框
+    - 注意:这里需要注意的是,如果想让键盘显示Action,需要inputType和imeOptions结合使用才可以,只使用imeOptions是不会有效果的.只会显示默认的换行action.\(不同手机的输入法不一样,可能显示的会有点小差别\)
+- 2.接下来我们看一下inputType可以接受的参数:
+- imeOptions参数
+    - 在代码中通过editText.setOnEditorActionListener方法添加相应的监听，因为有些action是需要在代码中添加具体的相关操作的
+
+<!-- /MarkdownTOC -->
 
 https://blog.csdn.net/asd199205/article/details/72841053
 
