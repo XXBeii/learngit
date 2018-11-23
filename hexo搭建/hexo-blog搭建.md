@@ -684,19 +684,24 @@ _config.yml添加代码：
 
 上一步中只有主页和文章页才会弹侧栏，自己添加的Page却不会。打开`\themes\next\layout\page.swig`，找到底部的
 
+```
     {% block sidebar %}
         {{ sidebar_template.render(false) }}
     {% endblock %}
+```
 
 把`false`改成`true`。这时不管有没有目录，都会弹出侧栏。需要让它根据目录的度来决定是否弹出，继续修改，结果如下：
-
+```
     {% block sidebar %}
         {{ sidebar_template.render(true) }}
     {% endblock %}
+```
 
+```
     {% block script_extra %}
       {% include '_scripts/pages/post-details.swig' %}
     {% endblock %}
+```
 
 直接使用与文章页（post-details）相同的侧栏设置。
 
